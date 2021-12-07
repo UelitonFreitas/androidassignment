@@ -8,6 +8,14 @@ import com.adyen.android.assignment.money.Change
  * @param change The change that the CashRegister is holding.
  */
 class CashRegister(private val change: Change) {
+
+    var total = Change()
+        private set
+
+    init {
+        total = change
+    }
+
     /**
      * Performs a transaction for a product/products with a certain price and a given amount.
      *
@@ -24,6 +32,9 @@ class CashRegister(private val change: Change) {
 
         if (price > amountPaid.total)
             throw TransactionException("Price could not be negative", IllegalArgumentException())
+
+        if (price == amountPaid.total)
+            return Change()
 
         return change
     }
