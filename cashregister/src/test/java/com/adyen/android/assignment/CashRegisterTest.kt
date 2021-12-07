@@ -3,7 +3,6 @@ package com.adyen.android.assignment
 import com.adyen.android.assignment.money.Change
 import com.adyen.android.assignment.money.Coin
 import org.junit.Assert.assertEquals
-import org.junit.Assert.fail
 import org.junit.Test
 
 class CashRegisterTest {
@@ -23,4 +22,11 @@ class CashRegisterTest {
         cashRegister.performTransaction(-1L, Change())
     }
 
+
+    @Test(expected = CashRegister.TransactionException::class)
+    fun `should not make a transaction if the change is less than product price`() {
+        val cashRegister = CashRegister(Change().add(Coin.TWO_EURO, 1))
+
+        cashRegister.performTransaction(10L, Change().add(Coin.ONE_CENT, 1))
+    }
 }

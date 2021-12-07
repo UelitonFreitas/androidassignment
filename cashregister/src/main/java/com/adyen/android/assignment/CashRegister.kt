@@ -22,6 +22,9 @@ class CashRegister(private val change: Change) {
         if (price < 0)
             throw TransactionException("Price could not be negative", IllegalArgumentException())
 
+        if (price > amountPaid.total)
+            throw TransactionException("Price could not be negative", IllegalArgumentException())
+
         return change
     }
 
