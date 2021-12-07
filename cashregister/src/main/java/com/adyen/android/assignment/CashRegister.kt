@@ -1,6 +1,6 @@
 package com.adyen.android.assignment
 
-import com.adyen.android.assignment.money.Change
+import com.adyen.android.assignment.money.*
 
 /**
  * The CashRegister class holds the logic for performing transactions.
@@ -36,8 +36,24 @@ class CashRegister(private val change: Change) {
         if (price == amountPaid.total)
             return Change()
 
+        var temporaryPriceForTransaction = price
+        val change = Change()
+
+        val monetaryElements: Set<MonetaryElement> =
+            Bill.values().map { it as MonetaryElement } union Coin.values()
+                .map { it as MonetaryElement }
+
+        monetaryElements.sortedWith(descendingComparator()).forEach { bill ->
+            while ((temporaryPriceForTransaction / bill.minorValue) != 0L) {
+                temporaryPriceForTransaction -= bill.minorValue
+                change.add(bill, 1)
+            }
+        }
+
         return change
     }
+
+    private fun descendingComparator() = compareBy<MonetaryElement> { -it.minorValue }
 
     class TransactionException(message: String, cause: Throwable? = null) :
         Exception(message, cause)
