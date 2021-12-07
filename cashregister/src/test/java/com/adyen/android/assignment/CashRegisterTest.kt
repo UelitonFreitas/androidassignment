@@ -4,7 +4,6 @@ import com.adyen.android.assignment.money.Bill
 import com.adyen.android.assignment.money.Change
 import com.adyen.android.assignment.money.Coin
 import org.junit.Assert.assertEquals
-import org.junit.Assert.fail
 import org.junit.Test
 
 class CashRegisterTest {
@@ -50,7 +49,13 @@ class CashRegisterTest {
         val fiveEuroChangeForTransaction3 = Change().add(Bill.FIVE_EURO, 1)
         val fiftyCentChangeForTransaction4 = Change().add(Coin.FIFTY_CENT, 1)
 
-        val cashRegister = CashRegister(Change().add(Bill.ONE_HUNDRED_EURO, 1))
+        val cashRegister = CashRegister(
+            Change()
+                .add(Bill.ONE_HUNDRED_EURO, 1)
+                .add(Coin.ONE_EURO, 1)
+                .add(Bill.FIVE_EURO, 1)
+                .add(Coin.FIFTY_CENT, 1)
+        )
 
         val transaction1 = cashRegister.performTransaction(10_00, Change().add(Bill.TEN_EURO, 1))
         val transaction2 = cashRegister.performTransaction(1_00L, Change().add(Coin.ONE_EURO, 2))
@@ -65,6 +70,9 @@ class CashRegisterTest {
 
     @Test(expected = CashRegister.TransactionException::class)
     fun `should not make a transaction when there is no enough change`() {
-        fail()
+
+        val cashRegister = CashRegister(Change().add(Bill.TEN_EURO, 1))
+
+        cashRegister.performTransaction(5_00, Change().add(Bill.TEN_EURO, 1))
     }
 }

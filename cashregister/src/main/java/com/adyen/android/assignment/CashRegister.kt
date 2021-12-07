@@ -36,6 +36,24 @@ class CashRegister(private val change: Change) {
         if (price == amountPaid.total)
             return Change()
 
+        val change = calculateChange(price)
+
+        var haveWeEnoughChange = true
+        change.getElements().forEach { changeMonetaryElement ->
+            if (total.getCount(changeMonetaryElement) < change.getCount(changeMonetaryElement))
+                haveWeEnoughChange = false
+        }
+
+        if (haveWeEnoughChange.not())
+            throw TransactionException(
+                "There is no enough change for transaction",
+                IllegalArgumentException()
+            )
+
+        return change
+    }
+
+    private fun calculateChange(price: Long): Change {
         var temporaryPriceForTransaction = price
         val change = Change()
 
@@ -43,17 +61,17 @@ class CashRegister(private val change: Change) {
             Bill.values().map { it as MonetaryElement } union Coin.values()
                 .map { it as MonetaryElement }
 
-        monetaryElements.sortedWith(descendingComparator()).forEach { bill ->
+        monetaryElements.sortedWith(descendingMonetaryElementComparator()).forEach { bill ->
             while ((temporaryPriceForTransaction / bill.minorValue) != 0L) {
                 temporaryPriceForTransaction -= bill.minorValue
                 change.add(bill, 1)
             }
         }
-
         return change
     }
 
-    private fun descendingComparator() = compareBy<MonetaryElement> { -it.minorValue }
+    private fun descendingMonetaryElementComparator() =
+        compareBy<MonetaryElement> { -it.minorValue }
 
     class TransactionException(message: String, cause: Throwable? = null) :
         Exception(message, cause)
