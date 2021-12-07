@@ -37,35 +37,28 @@ class CashRegisterTest {
         val noChange = Change()
 
         val cashRegister = CashRegister(Change().add(Bill.ONE_HUNDRED_EURO, 1))
+
         val transactionResult =
             cashRegister.performTransaction(10_00, Change().add(Bill.TEN_EURO, 1))
+
         assertEquals(noChange, transactionResult)
     }
 
     @Test
     fun `should return change`() {
-        val noChangeForTransaction1 = Change()
-        val oneEuroChangeForTransaction2 = Change().add(Coin.ONE_EURO, 1)
-        val fiveEuroChangeForTransaction3 = Change().add(Bill.FIVE_EURO, 1)
-        val fiftyCentChangeForTransaction4 = Change().add(Coin.FIFTY_CENT, 1)
+        val fiftyCentChange = Change().add(Coin.FIFTY_CENT, 1)
 
         val cashRegister = CashRegister(
-            Change()
-                .add(Bill.ONE_HUNDRED_EURO, 1)
-                .add(Coin.ONE_EURO, 1)
-                .add(Bill.FIVE_EURO, 1)
-                .add(Coin.FIFTY_CENT, 1)
+            Change().add(Bill.TEN_EURO, 1)
         )
 
-        val transaction1 = cashRegister.performTransaction(10_00, Change().add(Bill.TEN_EURO, 1))
-        val transaction2 = cashRegister.performTransaction(1_00L, Change().add(Coin.ONE_EURO, 2))
-        val transaction3 = cashRegister.performTransaction(5_00L, Change().add(Bill.TEN_EURO, 1))
-        val transaction4 = cashRegister.performTransaction(50L, Change().add(Coin.ONE_EURO, 1))
+        val transactionResult = cashRegister.performTransaction(
+            10_50, Change()
+                .add(Bill.TEN_EURO, 1)
+                .add(Coin.FIFTY_CENT, 2)
+        )
 
-        assertEquals(noChangeForTransaction1, transaction1)
-        assertEquals(oneEuroChangeForTransaction2, transaction2)
-        assertEquals(fiveEuroChangeForTransaction3, transaction3)
-        assertEquals(fiftyCentChangeForTransaction4, transaction4)
+        assertEquals(fiftyCentChange, transactionResult)
     }
 
     @Test(expected = CashRegister.TransactionException::class)
@@ -74,5 +67,38 @@ class CashRegisterTest {
         val cashRegister = CashRegister(Change().add(Bill.TEN_EURO, 1))
 
         cashRegister.performTransaction(5_00, Change().add(Bill.TEN_EURO, 1))
+    }
+
+    @Test
+    fun `should update cash register with multiples transactions`() {
+        val expectedFiftyCentChangeForTransaction1 = Change().add(Coin.FIFTY_CENT, 1)
+        val expectedTotalInCashRegisterForTransaction1 = Change()
+            .add(Coin.FIFTY_CENT, 1)
+            .add(Bill.TEN_EURO, 2)
+
+        val expectedFiftyCentChangeForTransaction2 = Change().add(Coin.FIFTY_CENT, 1)
+        val expectedTotalInCashRegisterForTransaction2 = Change()
+            .add(Bill.TEN_EURO, 2)
+            .add(Coin.ONE_EURO, 2)
+
+        val cashRegister = CashRegister(
+            Change().add(Bill.TEN_EURO, 1)
+        )
+
+        val fiftyCentChangeTransactionResult = cashRegister.performTransaction(
+            10_50, Change()
+                .add(Bill.TEN_EURO, 1)
+                .add(Coin.FIFTY_CENT, 2)
+        )
+
+        assertEquals(expectedFiftyCentChangeForTransaction1, fiftyCentChangeTransactionResult)
+        assertEquals(expectedTotalInCashRegisterForTransaction1, cashRegister.total)
+
+        val fiftyCentChangeTransactionResult2 = cashRegister.performTransaction(
+            1_50, Change().add(Coin.ONE_EURO, 2)
+        )
+
+        assertEquals(expectedFiftyCentChangeForTransaction2, fiftyCentChangeTransactionResult2)
+        assertEquals(expectedTotalInCashRegisterForTransaction2, cashRegister.total)
     }
 }
