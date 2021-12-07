@@ -19,8 +19,12 @@ class CashRegister(private val change: Change) {
      * @throws TransactionException If the transaction cannot be performed.
      */
     fun performTransaction(price: Long, amountPaid: Change): Change {
+        if (price < 0)
+            throw TransactionException("Price could not be negative", IllegalArgumentException())
+
         return change
     }
 
-    class TransactionException(message: String, cause: Throwable? = null) : Exception(message, cause)
+    class TransactionException(message: String, cause: Throwable? = null) :
+        Exception(message, cause)
 }
