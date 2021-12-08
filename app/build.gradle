@@ -1,6 +1,10 @@
-apply plugin: "com.android.application"
-apply plugin: "kotlin-android"
-apply plugin: "kotlin-android-extensions"
+apply plugin: 'com.android.application'
+apply plugin: 'jacoco'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-allopen'
+apply plugin: 'androidx.navigation.safeargs.kotlin'
+apply from: "local.gradle"
 
 if (!file("local.gradle").exists()) {
     exec {
@@ -9,45 +13,158 @@ if (!file("local.gradle").exists()) {
     }
 }
 
-apply from: "local.gradle"
-
+allOpen {
+    // allows mocking for classes w/o directly opening them for release builds
+    annotation 'com.adyen.android.assignment.testing.OpenClass'
+}
 android {
-    compileSdkVersion 28
+    compileSdkVersion build_versions.target_sdk
+    buildToolsVersion build_versions.build_tools
+
     defaultConfig {
         applicationId "com.adyen.android.assignment"
-        minSdkVersion 21
-        targetSdkVersion 28
+        minSdkVersion build_versions.min_sdk
+        targetSdkVersion build_versions.target_sdk
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        testInstrumentationRunner "com.adyen.android.assignment.util.InstandogTestRunner"
 
         buildConfigField "String", "FOURSQUARE_BASE_URL", "\"https://api.foursquare.com\""
     }
+
     buildTypes {
+        debug {
+            testCoverageEnabled !project.hasProperty('android.injected.invoked.from.ide')
+        }
+
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    dataBinding {
+        enabled = true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+    sourceSets {
+        androidTest.java.srcDirs += "src/test-common/java"
+        test.java.srcDirs += "src/test-common/java"
     }
 }
 
-dependencies {
-    androidTestImplementation "androidx.test:runner:1.2.0"
-    androidTestImplementation "androidx.test.ext:junit:1.1.1"
-    androidTestImplementation "androidx.test.espresso:espresso-core:3.2.0"
+jacoco {
+    toolVersion = "0.7.4+"
+}
 
-    testImplementation "junit:junit:4.13"
+dependencies {
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "androidx.appcompat:appcompat:1.1.0"
-    implementation "androidx.core:core-ktx:1.1.0"
-    
-    implementation "com.squareup.retrofit2:retrofit:2.7.1"
 
-    implementation "com.squareup.okhttp3:logging-interceptor:3.9.0"
+    implementation deps.app_compat
+    implementation deps.recyclerview
+    implementation deps.cardview
+    implementation deps.material
+    implementation deps.core_ktx
+    implementation deps.transition
+    implementation deps.navigation.fragment_ktx
+    implementation deps.room.runtime
+    implementation deps.lifecycle.livedata_ktx
+    implementation deps.lifecycle.runtime_ktx
+    implementation deps.lifecycle.java8
+    implementation deps.browser
+    implementation deps.retrofit.runtime
+    implementation deps.retrofit.gson
+    implementation deps.okhttp_logging_interceptor
+    implementation deps.glide.runtime
+    implementation deps.room.roomktx
 
-    implementation "com.google.code.gson:gson:2.8.6"
+    implementation deps.dagger.runtime
+    implementation deps.dagger.android
+    implementation deps.dagger.android_support
+    implementation deps.constraint_layout
+    implementation deps.kotlin.stdlib
+    implementation deps.coroutines.android
 
-    implementation "com.squareup.retrofit2:converter-gson:2.7.1"
+    implementation deps.timber
+
+    implementation deps.kotpref.core
+    implementation deps.kotpref.initializer
+
+    kapt deps.dagger.android_support_compiler
+    kapt deps.dagger.compiler
+    kapt deps.room.compiler
+    kapt deps.lifecycle.compiler
+
+    testImplementation deps.junit
+    testImplementation deps.mock_web_server
+    testImplementation deps.arch_core.testing
+    testImplementation deps.mockito.core
+
+    androidTestImplementation deps.atsl.core
+    androidTestImplementation deps.atsl.ext_junit
+    androidTestImplementation deps.atsl.runner
+    androidTestImplementation deps.atsl.rules
+
+    androidTestImplementation deps.app_compat
+    androidTestImplementation deps.recyclerview
+    androidTestImplementation deps.cardview
+    androidTestImplementation deps.material
+
+    androidTestImplementation deps.espresso.core
+    androidTestImplementation deps.espresso.contrib
+
+    androidTestImplementation deps.arch_core.testing
+    androidTestImplementation deps.mockito.core
+    androidTestImplementation deps.mockito.android
 }
+
+
+task fullCoverageReport(type: JacocoReport) {
+    dependsOn 'createDebugCoverageReport'
+    dependsOn 'testDebugUnitTest'
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+
+    def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*',
+                      '**/*Test*.*', 'android/**/*.*',
+                      '**/*_MembersInjector.class',
+                      '**/Dagger*Component.class',
+                      '**/Dagger*Component$Builder.class',
+                      '**/*_*Factory.class',
+                      '**/*ComponentImpl.class',
+                      '**/*SubComponentBuilder.class']
+    def debugTree = fileTree(dir: "${buildDir}/intermediates/classes/debug", excludes: fileFilter)
+    def mainSrc = "${project.projectDir}/src/main/java"
+
+    getSourceDirectories().setFrom(files([mainSrc]))
+    getClassDirectories().setFrom(files([debugTree]))
+    getExecutionData().setFrom(fileTree(dir: "$buildDir", includes: [
+            "jacoco/testDebugUnitTest.exec",
+            "outputs/code-coverage/connected/*coverage.ec"
+    ]))
+}
+
+// we need all open to run tests which  a we enable only for debug builds.
+project.tasks.whenTaskAdded {
+    if (it.name == "testReleaseUnitTest") {
+        it.enabled = false
+    }
+}
+
