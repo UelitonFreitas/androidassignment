@@ -1,17 +1,16 @@
 package com.adyen.android.assignment.api
 
 import com.adyen.android.assignment.BuildConfig
-import com.adyen.android.assignment.api.model.ResponseWrapper
-import com.adyen.android.assignment.api.model.VenueRecommendationsResponse
+import com.adyen.android.assignment.api.model.ApiResponse
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
-import retrofit2.http.Headers
 import retrofit2.http.QueryMap
 
 
@@ -22,14 +21,14 @@ interface PlacesService {
      * See [the docs](https://developer.foursquare.com/docs/api/venues/explore)
      */
     @GET("/v3/places/search")
-    fun getVenueRecommendations(@QueryMap query: Map<String, String>): Call<ResponseWrapper<VenueRecommendationsResponse>>
+    fun getVenueRecommendations(@QueryMap query: Map<String, String>): Call<ApiResponse>
 
     companion object  {
         private val retrofit by lazy {
             Retrofit.Builder()
                 .baseUrl(BuildConfig.FOURSQUARE_BASE_URL)
                 .client(httpClient)
-                .addConverterFactory(MoshiConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
                 .build()
         }
 
