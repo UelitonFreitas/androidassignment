@@ -15,20 +15,20 @@ if (!file("local.gradle").exists()) {
 
 allOpen {
     // allows mocking for classes w/o directly opening them for release builds
-    annotation 'com.hero.instadog.testing.OpenClass'
+    annotation 'com.adyen.android.assignment.testing.OpenClass'
 }
 android {
     compileSdkVersion build_versions.target_sdk
     buildToolsVersion build_versions.build_tools
 
     defaultConfig {
-        applicationId "com.hero.instadog"
+        applicationId "com.adyen.android.assignment"
         minSdkVersion build_versions.min_sdk
         targetSdkVersion build_versions.target_sdk
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "com.hero.instadog.util.InstandogTestRunner"
+        testInstrumentationRunner "com.adyen.android.assignment.util.InstandogTestRunner"
 
         buildConfigField "String", "FOURSQUARE_BASE_URL", "\"https://api.foursquare.com\""
     }
