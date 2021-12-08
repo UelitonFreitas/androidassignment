@@ -12,6 +12,10 @@ class CashRegister(private val change: Change) {
     var total = Change()
         private set
 
+    private val availableMonetaryUnits =
+        Bill.values().map { it as MonetaryElement } union Coin.values()
+            .map { it as MonetaryElement }
+
     init {
         total = change
     }
@@ -29,80 +33,97 @@ class CashRegister(private val change: Change) {
     fun performTransaction(price: Long, amountPaid: Change): Change {
 
         when {
-            price < 0 ->  throw TransactionException("Price could not be negative", IllegalArgumentException())
-            price > amountPaid.total -> throw TransactionException("Amount Paid should be greater or equal the price", IllegalArgumentException())
+            price < 0 -> throw TransactionException(
+                "Price could not be negative",
+                IllegalArgumentException()
+            )
+            price > amountPaid.total -> throw TransactionException(
+                "Amount Paid should be greater or equal the price",
+                IllegalArgumentException()
+            )
         }
 
         val totalChangeToBeReturned = amountPaid.total - price
-        val changeToBeReturned = getMoney(totalChangeToBeReturned)
+        val changeToBeReturnedInMonetaryElements =
+            transformPriceInMonetaryElements(totalChangeToBeReturned, availableMonetaryUnits)
 
-        if (haveChangeToBeReturned(amountPaid, changeToBeReturned).not())
+        if (haveChangeToBeReturned(amountPaid, changeToBeReturnedInMonetaryElements).not())
             throw TransactionException(
                 "There is no enough change for transaction",
                 IllegalArgumentException()
             )
 
-        amountPaid.getElements().forEach { monetaryElement ->
-            total.add(monetaryElement, amountPaid.getCount(monetaryElement))
-        }
+        updateCashRegister(amountPaid, changeToBeReturnedInMonetaryElements)
 
-        changeToBeReturned.getElements().forEach { monetaryElement ->
-            total.remove(monetaryElement, changeToBeReturned.getCount(monetaryElement))
-        }
-
-        return changeToBeReturned
+        return changeToBeReturnedInMonetaryElements
     }
+
+    private fun transformPriceInMonetaryElements(
+        price: Long,
+        monetaryElements: Set<MonetaryElement>
+    ): Change {
+        var temporaryPriceForTransaction = price
+        val change = Change.none()
+
+        monetaryElements.sortedWith(descendingMonetaryElementComparator())
+            .forEach { monetaryElement ->
+                while ((temporaryPriceForTransaction / monetaryElement.minorValue) != 0L) {
+                    temporaryPriceForTransaction -= monetaryElement.minorValue
+                    change.add(monetaryElement, 1)
+                }
+            }
+        return change
+    }
+
+    private fun descendingMonetaryElementComparator() =
+        compareBy<MonetaryElement> { -it.minorValue }
 
     private fun haveChangeToBeReturned(
         amountPaid: Change,
         changeToBeReturned: Change
     ): Boolean {
-        var haveWeEnoughChange = true
-        val currentMonetaryElementsWithAmountPaid = Change()
+        val totalInCashRegisterWithAmountPaid = Change.none()
 
         (amountPaid.getElements()).forEach { monetaryElement ->
-            currentMonetaryElementsWithAmountPaid.add(
+            totalInCashRegisterWithAmountPaid.add(
                 monetaryElement,
                 amountPaid.getCount(monetaryElement)
             )
         }
 
         (total.getElements()).forEach { monetaryElement ->
-            currentMonetaryElementsWithAmountPaid.add(
+            totalInCashRegisterWithAmountPaid.add(
                 monetaryElement,
                 total.getCount(monetaryElement)
             )
         }
 
         changeToBeReturned.getElements().forEach { changeMonetaryElement ->
-            if (currentMonetaryElementsWithAmountPaid.getCount(changeMonetaryElement) < changeToBeReturned.getCount(
+            if (totalInCashRegisterWithAmountPaid.getCount(changeMonetaryElement) < changeToBeReturned.getCount(
                     changeMonetaryElement
                 )
             )
-                haveWeEnoughChange = false
+                return false
         }
-        return haveWeEnoughChange
+
+        return true
     }
 
-    private fun getMoney(price: Long): Change {
-        var temporaryPriceForTransaction = price
-        val change = Change()
-
-        val monetaryElements: Set<MonetaryElement> =
-            Bill.values().map { it as MonetaryElement } union Coin.values()
-                .map { it as MonetaryElement }
-
-        monetaryElements.sortedWith(descendingMonetaryElementComparator()).forEach { monetaryElement ->
-            while ((temporaryPriceForTransaction / monetaryElement.minorValue) != 0L) {
-                temporaryPriceForTransaction -= monetaryElement.minorValue
-                change.add(monetaryElement, 1)
-            }
+    private fun updateCashRegister(
+        amountPaid: Change,
+        changeToBeReturnedInMonetaryElements: Change
+    ) {
+        amountPaid.getElements().forEach { monetaryElement ->
+            total.add(monetaryElement, amountPaid.getCount(monetaryElement))
         }
-        return change
-    }
 
-    private fun descendingMonetaryElementComparator() =
-        compareBy<MonetaryElement> { -it.minorValue }
+        changeToBeReturnedInMonetaryElements.getElements().forEach { monetaryElement ->
+            total.remove(
+                monetaryElement,
+                changeToBeReturnedInMonetaryElements.getCount(monetaryElement)
+            )
+        }
+    }
 
     class TransactionException(message: String, cause: Throwable? = null) :
         Exception(message, cause)
