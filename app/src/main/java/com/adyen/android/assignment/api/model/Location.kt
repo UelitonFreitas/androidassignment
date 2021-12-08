@@ -1,16 +1,14 @@
 package com.adyen.android.assignment.api.model
 
-data class Location(
-    val address: String,
-    val cc: String,
-    val city: String,
-    val country: String,
-    val crossStreet: String,
-    val distance: Int,
-    val formattedAddress: List<String>,
-    val labeledLatLngs: List<LabeledLatLng>,
-    val lat: Double,
-    val lng: Double,
-    val postalCode: String,
-    val state: String
+import com.google.gson.annotations.SerializedName
+
+data class Location (
+
+	@SerializedName("address") val address : String,
+	@SerializedName("country") val country : String,
+	@SerializedName("cross_street") val cross_street : String,
+	@SerializedName("locality") val locality : String,
+	@SerializedName("neighborhood") val neighborhood : List<String>,
+	@SerializedName("postcode") val postcode : String,
+	@SerializedName("region") val region : String
 )
