@@ -27,14 +27,11 @@ class CashRegister(private val change: Change) {
      * @throws TransactionException If the transaction cannot be performed.
      */
     fun performTransaction(price: Long, amountPaid: Change): Change {
-        if (price < 0)
-            throw TransactionException("Price could not be negative", IllegalArgumentException())
 
-        if (price > amountPaid.total)
-            throw TransactionException("Price could not be negative", IllegalArgumentException())
-
-        if (price == amountPaid.total)
-            return Change()
+        when {
+            price < 0 ->  throw TransactionException("Price could not be negative", IllegalArgumentException())
+            price > amountPaid.total -> throw TransactionException("Amount Paid should be greater or equal the price", IllegalArgumentException())
+        }
 
         val totalChangeToBeReturned = amountPaid.total - price
         val changeToBeReturned = getMoney(totalChangeToBeReturned)

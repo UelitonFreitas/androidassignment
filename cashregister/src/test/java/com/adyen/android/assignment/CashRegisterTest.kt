@@ -19,7 +19,7 @@ class CashRegisterTest {
     }
 
     @Test(expected = CashRegister.TransactionException::class)
-    fun `should throw TransactionException when price is negative`() {
+    fun `should not make transaction when price is negative`() {
         val cashRegister = CashRegister(Change().add(Coin.TWO_EURO, 1))
 
         cashRegister.performTransaction(-1L, Change())
