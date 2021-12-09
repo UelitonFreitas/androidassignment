@@ -13,23 +13,25 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class PlacesServicesApiImpl : PlacesServicesApi {
 
-    private val retrofit by lazy {
-        Retrofit.Builder()
-            .baseUrl(BuildConfig.FOURSQUARE_BASE_URL)
-            .client(httpClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
+    companion object {
+        private val retrofit by lazy {
+            Retrofit.Builder()
+                .baseUrl(BuildConfig.FOURSQUARE_BASE_URL)
+                .client(httpClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+        }
 
-    private val instance: PlacesService by lazy { retrofit.create(PlacesService::class.java) }
+        val instance: PlacesService by lazy { retrofit.create(PlacesService::class.java) }
 
-    private val httpClient by lazy {
-        OkHttpClient.Builder()
-            .addNetworkInterceptor(HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BODY
-            })
-            .addInterceptor(AuthenticationInterceptor())
-            .build()
+        private val httpClient by lazy {
+            OkHttpClient.Builder()
+                .addNetworkInterceptor(HttpLoggingInterceptor().apply {
+                    level = HttpLoggingInterceptor.Level.BODY
+                })
+                .addInterceptor(AuthenticationInterceptor())
+                .build()
+        }
     }
 
     class AuthenticationInterceptor : Interceptor {
@@ -44,6 +46,6 @@ class PlacesServicesApiImpl : PlacesServicesApi {
 
     override suspend fun getVenueRecommendations(query: Map<String, String>): List<Place> =
         withContext(Dispatchers.IO) {
-            instance.getVenueRecommendations(query).results.map { Place("uhuuuuu") }
+            instance.getVenueRecommendations(query).execute().body()?.results?.map { Place("aaaaa") } ?: emptyList()
         }
 }

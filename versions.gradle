@@ -15,7 +15,7 @@ versions.cardview = "1.0.0"
 versions.constraint_layout = "2.0.0-alpha2"
 versions.core_ktx = "1.1.0"
 versions.core_utils = "1.0.0"
-versions.coroutines = "1.3.3"
+versions.coroutines = "1.4.2"
 versions.dagger = "2.16"
 versions.dexmaker = "2.2.0"
 versions.espresso = "3.2.0"
@@ -89,7 +89,7 @@ deps.core_utils = "androidx.legacy:legacy-support-core-utils:$versions.core_util
 
 def coroutines = [:]
 coroutines.android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.coroutines"
-coroutines.test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$versions.coroutines"
+coroutines.test =   "org.jetbrains.kotlinx:kotlinx-coroutines-test:$versions.coroutines"
 deps.coroutines = coroutines
 
 def dagger = [:]

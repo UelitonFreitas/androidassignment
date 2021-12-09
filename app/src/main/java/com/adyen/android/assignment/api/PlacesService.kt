@@ -13,5 +13,5 @@ interface PlacesService {
      * See [the docs](https://developer.foursquare.com/docs/api/venues/explore)
      */
     @GET("/v3/places/search")
-    fun getVenueRecommendations(@QueryMap query: Map<String, String>): ApiResponse
+    fun getVenueRecommendations(@QueryMap query: Map<String, String>): Call<ApiResponse>
 }
