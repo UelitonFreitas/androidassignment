@@ -1,0 +1,42 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.adyen.android.assignment.repository.model.Place" />
+
+        <import type="java.util.List" />
+
+        <import type="androidx.lifecycle.LiveData" />
+
+        <variable
+            name="places"
+            type="LiveData&lt;List&lt;Place>>" />
+
+        <variable
+            name="retryCallback"
+            type="com.adyen.android.assignment.ui.placesList.PlaceListFragment.RetryButtonCallback" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_places_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            app:layoutManager="LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:listitem="@layout/place_item" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
