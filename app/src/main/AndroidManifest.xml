@@ -3,15 +3,19 @@
     package="com.adyen.android.assignment">
 
     <application
+        android:name=".AssignmentApp"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="GoogleAppIndexingWarning" >
+        tools:ignore="GoogleAppIndexingWarning">
 
-        <activity android:name=".ui.MainActivity" >
+        <activity
+            android:name=".ui.MainActivity"
+            android:exported="true"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
