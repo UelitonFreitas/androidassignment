@@ -16,7 +16,7 @@ abstract class ViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(PlacesListViewModel::class)
-    abstract fun bindBreedListViewModel(placesListViewModel: PlacesListViewModel): ViewModel
+    abstract fun bindPlacesListViewModel(placesListViewModel: PlacesListViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: PlacesListViewModelFactory): ViewModelProvider.Factory

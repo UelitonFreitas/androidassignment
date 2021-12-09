@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 interface PlaceDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertPlaces(breeds: List<Place>)
+    fun insertPlaces(places: List<Place>)
 
     @Query("SELECT * FROM place")
     fun getPlaces(): Flow<List<Place>>
