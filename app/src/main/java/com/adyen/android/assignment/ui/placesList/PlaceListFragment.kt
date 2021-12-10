@@ -16,6 +16,7 @@ import com.adyen.android.assignment.databinding.FragmentPlacesListBinding
 import com.adyen.android.assignment.di.Injectable
 import com.adyen.android.assignment.executors.AppExecutors
 import com.adyen.android.assignment.ui.placesList.adapters.PlacesListAdapter
+import com.google.android.material.snackbar.Snackbar
 import javax.inject.Inject
 
 class PlaceListFragment : Fragment(), Injectable {
@@ -47,6 +48,18 @@ class PlaceListFragment : Fragment(), Injectable {
             false,
             dataBindingComponent
         )
+
+
+        placesListViewModel.shouldShowSpinner.observe(viewLifecycleOwner) { show ->
+            binding.loadingLayout.visibility = if (show) View.VISIBLE else View.GONE
+        }
+
+        placesListViewModel.snackbar.observe(viewLifecycleOwner) { text ->
+            text?.let {
+                Snackbar.make(binding.root, text, Snackbar.LENGTH_SHORT).show()
+                placesListViewModel.onSnackbarShown()
+            }
+        }
 
         return binding.root
     }
