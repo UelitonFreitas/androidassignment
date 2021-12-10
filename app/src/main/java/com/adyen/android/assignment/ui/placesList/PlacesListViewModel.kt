@@ -3,14 +3,15 @@ package com.adyen.android.assignment.ui.placesList
 import androidx.lifecycle.*
 import com.adyen.android.assignment.api.VenueRecommendationsQueryBuilder
 import com.adyen.android.assignment.repository.PlacesRepository
+import com.adyen.android.assignment.repository.geolocalization.GeolocationRepository
+import com.adyen.android.assignment.repository.geolocalization.model.Location
 import com.adyen.android.assignment.repository.model.Place
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class PlacesListViewModel @Inject constructor(
-    private val placesRepository: PlacesRepository
+    private val placesRepository: PlacesRepository,
+    private val geolocationRepository: GeolocationRepository
 ) : ViewModel() {
 
     private val _loadPlaces = MutableStateFlow(Unit)
@@ -25,20 +26,21 @@ class PlacesListViewModel @Inject constructor(
     val snackbar: LiveData<String?>
         get() = _snackbar
 
-    init {
-        _loadPlaces.mapLatest {
+    private val _location = MutableStateFlow(Location(-1.0, -1.0))
 
-            _shouldShowSpinner.value = true
-            
-                val query = VenueRecommendationsQueryBuilder()
-                    .setLatitudeLongitude(52.376510, 4.905890)
-                    .build()
-                placesRepository.getVenueRecommendations(query)
-        }.onEach {
-            _shouldShowSpinner.value = false
-        }.catch { throwable ->
-            _snackbar.value = throwable.message
+    init {
+
+        loadDataFor(_loadPlaces) {
+            placesRepository.getVenueRecommendations(_location.value)
+        }
+
+        geolocationRepository.fetchLocations().mapLatest {
+            _location.value = it
         }.launchIn(viewModelScope)
+
+        loadDataFor(_location) {
+            placesRepository.getVenueRecommendations(it)
+        }
     }
 
     fun loadPlaces() {
@@ -54,5 +56,14 @@ class PlacesListViewModel @Inject constructor(
 
     fun onSnackbarShown() {
         _snackbar.value = null
+    }
+
+    private fun <T> loadDataFor(source: StateFlow<T>, block: suspend (T) -> Unit) {
+        source.mapLatest { data ->
+            _shouldShowSpinner.value = true
+            block(data)
+        }.onEach { _shouldShowSpinner.value = false }
+            .catch { throwable -> _snackbar.value = throwable.message }
+            .launchIn(viewModelScope)
     }
 }

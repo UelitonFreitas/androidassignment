@@ -3,6 +3,7 @@ package com.adyen.android.assignment.api.retrofit
 import com.adyen.android.assignment.BuildConfig
 import com.adyen.android.assignment.api.PlacesServicesApi
 import com.adyen.android.assignment.api.VenueRecommendationsQueryBuilder
+import com.adyen.android.assignment.repository.geolocalization.model.Location
 import com.adyen.android.assignment.repository.model.Place
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -46,12 +47,15 @@ class PlacesServicesApiImpl : PlacesServicesApi {
         }
     }
 
-    override suspend fun getVenueRecommendations(query: Map<String, String>): List<Place> =
+    override suspend fun getVenueRecommendations(location: Location): List<Place> =
         withContext(Dispatchers.IO) {
+
+            val query = VenueRecommendationsQueryBuilder()
+                .setLatitudeLongitude(location.latitude, location.longitude)
+                .build()
+
             instance.getVenueRecommendations(query).execute().body()?.results?.map { place ->
-                Place(
-                    place.name
-                )
+                Place(place.name)
             } ?: emptyList()
         }
 }

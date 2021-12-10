@@ -70,6 +70,7 @@ dependencies {
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
 
+    implementation 'com.google.android.gms:play-services-location:19.0.0'
     implementation deps.app_compat
     implementation deps.recyclerview
     implementation deps.cardview
