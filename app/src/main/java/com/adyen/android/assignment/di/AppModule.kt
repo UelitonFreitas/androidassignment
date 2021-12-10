@@ -10,12 +10,22 @@ import com.adyen.android.assignment.repository.dataBase.PlaceDao
 import com.adyen.android.assignment.repository.dataBase.PlacesDatabase
 import com.adyen.android.assignment.repository.geolocalization.GeolocationRepository
 import com.adyen.android.assignment.repository.geolocalization.GeolocationRepositoryImpl
+import com.adyen.android.assignment.userCases.PlacesUserCase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
 @Module(includes = [ViewModelModule::class])
 class AppModule {
+
+    @Singleton
+    @Provides
+    fun providePlacesUserCase(
+        placesRepository: PlacesRepository,
+        geolocationRepository: GeolocationRepository
+    ): PlacesUserCase {
+        return PlacesUserCase(placesRepository, geolocationRepository)
+    }
 
     @Singleton
     @Provides

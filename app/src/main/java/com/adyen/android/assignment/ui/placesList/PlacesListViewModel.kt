@@ -1,64 +1,58 @@
 package com.adyen.android.assignment.ui.placesList
 
 import androidx.lifecycle.*
-import com.adyen.android.assignment.api.VenueRecommendationsQueryBuilder
-import com.adyen.android.assignment.repository.PlacesRepository
-import com.adyen.android.assignment.repository.geolocalization.GeolocationRepository
-import com.adyen.android.assignment.repository.geolocalization.model.Location
 import com.adyen.android.assignment.repository.model.Place
-import kotlinx.coroutines.flow.*
+import com.adyen.android.assignment.userCases.PlacesUserCase
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 class PlacesListViewModel @Inject constructor(
-    private val placesRepository: PlacesRepository,
-    private val geolocationRepository: GeolocationRepository
+    private val placesUserCase: PlacesUserCase
 ) : ViewModel() {
 
     private val _loadPlaces = MutableStateFlow(Unit)
 
-    private val _shouldShowSpinner = MutableLiveData(false)
+    val shouldShowSpinner = MutableLiveData(false)
 
-    val shouldShowSpinner: LiveData<Boolean>
-        get() = _shouldShowSpinner
-
-    private val _snackbar = MutableLiveData<String?>()
+    private val _snackbar = placesUserCase.errorMessage
 
     val snackbar: LiveData<String?>
-        get() = _snackbar
-
-    private val _location = MutableStateFlow(Location(-1.0, -1.0))
+        get() = _snackbar.asLiveData()
 
     init {
 
-        loadDataFor(_loadPlaces) {
-            placesRepository.getVenueRecommendations(_location.value)
-        }
-
-        geolocationRepository.fetchLocations().mapLatest {
-            _location.value = it
+        _loadPlaces.mapLatest {
+            placesUserCase.shouldLoadPlaces.value = Unit
         }.launchIn(viewModelScope)
 
-        loadDataFor(_location) {
-            placesRepository.getVenueRecommendations(it)
-        }
+        setupErrorMessage()
+
+        placesUserCase.shouldShowLoading.onEach {
+            shouldShowSpinner.value = it
+        }.launchIn(viewModelScope)
+
+    }
+
+    private fun setupErrorMessage() {
+        placesUserCase.errorMessage.mapLatest {
+            _snackbar.value = it
+        }.launchIn(viewModelScope)
+
+        _snackbar.mapLatest {
+            placesUserCase.errorMessage.value = it
+        }.launchIn(viewModelScope)
     }
 
     fun loadPlaces() {
         _loadPlaces.value = Unit
     }
 
-    val places: LiveData<List<Place>> = placesRepository.getPlaceListFlow().asLiveData()
+    val places: LiveData<List<Place>> = placesUserCase.placesFlow.asLiveData()
 
     fun onSnackbarShown() {
         _snackbar.value = null
-    }
-
-    private fun <T> loadDataFor(source: StateFlow<T>, block: suspend (T) -> Unit) {
-        source.mapLatest { data ->
-            _shouldShowSpinner.value = true
-            block(data)
-        }.onEach { _shouldShowSpinner.value = false }
-            .catch { throwable -> _snackbar.value = throwable.message }
-            .launchIn(viewModelScope)
     }
 }
