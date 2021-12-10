@@ -47,12 +47,7 @@ class PlacesListViewModel @Inject constructor(
         _loadPlaces.value = Unit
     }
 
-    val places: LiveData<List<Place>> = _loadPlaces.flatMapLatest { _ ->
-        _shouldShowSpinner.value = true
-        placesRepository.getPlaceListFlow()
-    }.onEach {
-        _shouldShowSpinner.value = false
-    }.asLiveData()
+    val places: LiveData<List<Place>> = placesRepository.getPlaceListFlow().asLiveData()
 
     fun onSnackbarShown() {
         _snackbar.value = null
