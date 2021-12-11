@@ -4,6 +4,8 @@ import android.app.Application
 import androidx.room.Room
 import com.adyen.android.assignment.api.PlacesServicesApi
 import com.adyen.android.assignment.api.retrofit.PlacesServicesApiImpl
+import com.adyen.android.assignment.dispatchers.DefaultDispatcherProvider
+import com.adyen.android.assignment.dispatchers.DispatcherProvider
 import com.adyen.android.assignment.repository.PlacesRepository
 import com.adyen.android.assignment.repository.PlacesRepositoryImpl
 import com.adyen.android.assignment.repository.dataBase.PlaceDao
@@ -11,6 +13,7 @@ import com.adyen.android.assignment.repository.dataBase.PlacesDatabase
 import com.adyen.android.assignment.repository.geolocalization.GeolocationRepository
 import com.adyen.android.assignment.repository.geolocalization.GeolocationRepositoryImpl
 import com.adyen.android.assignment.userCases.PlacesUserCase
+import com.adyen.android.assignment.userCases.PlacesUserCaseImpl
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -22,9 +25,16 @@ class AppModule {
     @Provides
     fun providePlacesUserCase(
         placesRepository: PlacesRepository,
-        geolocationRepository: GeolocationRepository
+        geolocationRepository: GeolocationRepository,
+        dispatcherProvider: DispatcherProvider
     ): PlacesUserCase {
-        return PlacesUserCase(placesRepository, geolocationRepository)
+        return PlacesUserCaseImpl(placesRepository, geolocationRepository, dispatcherProvider)
+    }
+
+    @Singleton
+    @Provides
+    fun provideDispatcherProvider(): DispatcherProvider {
+        return DefaultDispatcherProvider()
     }
 
     @Singleton

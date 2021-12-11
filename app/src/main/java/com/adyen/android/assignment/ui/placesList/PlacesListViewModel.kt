@@ -25,7 +25,7 @@ class PlacesListViewModel @Inject constructor(
     init {
 
         _loadPlaces.mapLatest {
-            placesUserCase.shouldLoadPlaces.value = Unit
+            placesUserCase.loadPlaces()
         }.launchIn(viewModelScope)
 
         setupErrorMessage()
@@ -50,7 +50,7 @@ class PlacesListViewModel @Inject constructor(
         _loadPlaces.value = Unit
     }
 
-    val places: LiveData<List<Place>> = placesUserCase.placesFlow.asLiveData()
+    val places: LiveData<List<Place>> = placesUserCase.getPlacesFlow().asLiveData()
 
     fun onSnackbarShown() {
         _snackbar.value = null

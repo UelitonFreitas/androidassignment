@@ -70,7 +70,6 @@ dependencies {
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
 
-    implementation 'com.google.android.gms:play-services-location:19.0.0'
     implementation deps.app_compat
     implementation deps.recyclerview
     implementation deps.cardview
@@ -110,6 +109,10 @@ dependencies {
     testImplementation deps.mock_web_server
     testImplementation deps.arch_core.testing
     testImplementation deps.mockito.core
+    testImplementation deps.coroutines.test
+    testImplementation deps.mockito.kotlin
+    testImplementation deps.turbine
+    testImplementation deps.hamcrest
 
     androidTestImplementation deps.atsl.core
     androidTestImplementation deps.atsl.ext_junit
