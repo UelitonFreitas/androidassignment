@@ -2,16 +2,16 @@ package com.adyen.android.assignment.ui
 
 import app.cash.turbine.test
 import com.adyen.android.assignment.CoroutinesTestRule
+import com.adyen.android.assignment.model.Resource
 import com.adyen.android.assignment.repository.PlacesRepository
 import com.adyen.android.assignment.repository.geolocalization.GeolocationRepository
 import com.adyen.android.assignment.repository.geolocalization.model.Location
 import com.adyen.android.assignment.repository.model.Place
 import com.adyen.android.assignment.userCases.PlacesUserCaseImpl
+import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runBlockingTest
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.*
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.kotlin.*
@@ -32,13 +32,12 @@ class PlacesListUserCaseTest {
             val locationFlow = flow<Location> { }
             whenever(geolocationRepository.fetchLocations()).thenReturn(locationFlow)
 
-            val placeFlow = flow<List<Place>> { }
+            val placeFlow = flow<Resource<List<Place>>> { }
             whenever(placesRepository.getPlaceListFlow()).thenReturn(placeFlow)
 
             val userCase = PlacesUserCaseImpl(
                 placesRepository,
-                geolocationRepository,
-                coroutinesTestRule.testDispatcherProvider
+                geolocationRepository
             )
 
             verify(placesRepository, never()).getVenueRecommendations(any())
@@ -50,54 +49,38 @@ class PlacesListUserCaseTest {
     fun `should load places for a location`() = coroutinesTestRule.testDispatcher.runBlockingTest {
 
         val location = Location(1.0, 1.0)
+        val expectedPlaces = createPlaces(3)
 
         mockLocationRepositoryFlow(location)
 
-        mockPlacesRepositoryFlow()
+        mockPlacesRepositoryFlowWithLocation(location, expectedPlaces)
 
         val userCase = PlacesUserCaseImpl(
             placesRepository,
-            geolocationRepository,
-            coroutinesTestRule.testDispatcherProvider
+            geolocationRepository
         )
 
         userCase.getPlacesFlow().test {
-            assertThat(
-                awaitItem(), contains(
-                    createPlace("Place-0"),
-                    createPlace("Place-1"),
-                    createPlace("Place-2")
-                )
-            )
+            assertEquals(Resource.success(expectedPlaces), awaitItem())
             awaitComplete()
         }
     }
 
-    @Test
-    fun `should load places for a location on user interaction`() =
-        coroutinesTestRule.testDispatcher.runBlockingTest {
-
-            val location = Location(1.0, 1.0)
-
-            mockLocationRepositoryFlow(location)
-
-            val userCase = PlacesUserCaseImpl(
-                placesRepository,
-                geolocationRepository,
-                coroutinesTestRule.testDispatcherProvider
-            )
-
-            mockPlacesRepositoryFlow(createPlaces(3))
-
-            userCase.loadPlaces()
-
-            verify(placesRepository, times(2)).getVenueRecommendations(eq(location))
-        }
-
-    private fun mockPlacesRepositoryFlow(places: List<Place> = createPlaces(3)) {
-        val placeFlow = flow { emit(places) }
+    private suspend fun mockPlacesRepositoryFlow(places: List<Place> = createPlaces(3)) {
+        val placeFlow = flow { emit(Resource.success(places)) }
         whenever(placesRepository.getPlaceListFlow()).thenReturn(placeFlow)
     }
+
+    private suspend fun mockPlacesRepositoryFlowWithLocation(
+        location: Location,
+        places: List<Place> = createPlaces(3)
+    ) {
+        val placeFlow = flow {
+            emit(Resource.success(places))
+        }
+        whenever(placesRepository.getVenueRecommendationsFlow(eq(location))).thenReturn(placeFlow)
+    }
+
 
     private fun mockLocationRepositoryFlow(location: Location) {
         val locationFlow = flow { emit(location) }

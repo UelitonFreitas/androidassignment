@@ -1,11 +1,13 @@
-package com.adyen.android.assignment.api.retrofit
-
 import com.adyen.android.assignment.BuildConfig
 import com.adyen.android.assignment.api.PlacesServicesApi
 import com.adyen.android.assignment.api.VenueRecommendationsQueryBuilder
+import com.adyen.android.assignment.api.retrofit.PlacesService
+import com.adyen.android.assignment.dispatchers.DispatcherProvider
+import com.adyen.android.assignment.model.Resource
 import com.adyen.android.assignment.repository.geolocalization.model.Location
 import com.adyen.android.assignment.repository.model.Place
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -13,8 +15,10 @@ import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Inject
 
-class PlacesServicesApiImpl : PlacesServicesApi {
+class PlacesServicesApiImpl @Inject constructor(val dispatcherProvider: DispatcherProvider) :
+    PlacesServicesApi {
 
     companion object {
         private val retrofit by lazy {
@@ -48,7 +52,7 @@ class PlacesServicesApiImpl : PlacesServicesApi {
     }
 
     override suspend fun getVenueRecommendations(location: Location): List<Place> =
-        withContext(Dispatchers.IO) {
+        withContext(dispatcherProvider.io()) {
 
             val query = VenueRecommendationsQueryBuilder()
                 .setLatitudeLongitude(location.latitude, location.longitude)
@@ -57,5 +61,15 @@ class PlacesServicesApiImpl : PlacesServicesApi {
             instance.getVenueRecommendations(query).execute().body()?.results?.map { place ->
                 Place(place.name)
             } ?: emptyList()
+        }
+
+    override fun getVenueRecommendationsFlow(location: Location): Flow<Resource<List<Place>>> =
+        flow {
+            emit(Resource.loading(null))
+            try {
+                emit(Resource.success(getVenueRecommendations(location)))
+            } catch (e: Throwable) {
+                emit(Resource.error<List<Place>>(emptyList()))
+            }
         }
 }

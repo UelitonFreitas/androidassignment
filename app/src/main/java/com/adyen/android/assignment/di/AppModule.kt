@@ -1,9 +1,9 @@
 package com.adyen.android.assignment.di
 
+import PlacesServicesApiImpl
 import android.app.Application
 import androidx.room.Room
 import com.adyen.android.assignment.api.PlacesServicesApi
-import com.adyen.android.assignment.api.retrofit.PlacesServicesApiImpl
 import com.adyen.android.assignment.dispatchers.DefaultDispatcherProvider
 import com.adyen.android.assignment.dispatchers.DispatcherProvider
 import com.adyen.android.assignment.repository.PlacesRepository
@@ -25,10 +25,9 @@ class AppModule {
     @Provides
     fun providePlacesUserCase(
         placesRepository: PlacesRepository,
-        geolocationRepository: GeolocationRepository,
-        dispatcherProvider: DispatcherProvider
+        geolocationRepository: GeolocationRepository
     ): PlacesUserCase {
-        return PlacesUserCaseImpl(placesRepository, geolocationRepository, dispatcherProvider)
+        return PlacesUserCaseImpl(placesRepository, geolocationRepository)
     }
 
     @Singleton
@@ -39,8 +38,8 @@ class AppModule {
 
     @Singleton
     @Provides
-    fun providePlacesService(): PlacesServicesApi {
-        return PlacesServicesApiImpl()
+    fun providePlacesService(dispatcherProvider: DispatcherProvider): PlacesServicesApi {
+        return PlacesServicesApiImpl(dispatcherProvider)
     }
 
     @Singleton
@@ -53,9 +52,10 @@ class AppModule {
     @Provides
     fun providePlacesRepository(
         placesServicesApi: PlacesServicesApi,
-        placeDao: PlaceDao
+        placeDao: PlaceDao,
+        dispatcherProvider: DispatcherProvider
     ): PlacesRepository {
-        return PlacesRepositoryImpl(placesServicesApi, placeDao)
+        return PlacesRepositoryImpl(placesServicesApi, placeDao, dispatcherProvider)
     }
 
     @Singleton
