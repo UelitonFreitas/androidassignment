@@ -1,9 +1,14 @@
 package com.adyen.android.assignment.ui.placesList
 
+import android.content.Context
 import android.os.Bundle
+import android.os.IBinder
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.databinding.DataBindingComponent
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -49,9 +54,8 @@ class PlaceListFragment : Fragment(), Injectable {
             dataBindingComponent
         )
 
-
         placesListViewModel.shouldShowSpinner.observe(viewLifecycleOwner) { show ->
-            binding.loadingLayout.visibility = if (show) View.VISIBLE else View.GONE
+            binding.progressBar.visibility = if (show) View.VISIBLE else View.GONE
         }
 
         placesListViewModel.snackbar.observe(viewLifecycleOwner) { text ->
@@ -78,6 +82,10 @@ class PlaceListFragment : Fragment(), Injectable {
         binding.places = placesListViewModel.places
         binding.recyclerViewPlacesList.adapter = placesListAdapter
         adapter = placesListAdapter
+
+        binding.query = placesListViewModel.query
+
+        initSearchInputListener()
     }
 
     private fun initRecyclerView() {
@@ -92,9 +100,39 @@ class PlaceListFragment : Fragment(), Injectable {
         fun retry()
     }
 
+    private fun initSearchInputListener() {
+        binding.input.setOnEditorActionListener { view: View, actionId: Int, _: KeyEvent? ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                doSearch(view)
+                true
+            } else {
+                false
+            }
+        }
+        binding.input.setOnKeyListener { view: View, keyCode: Int, event: KeyEvent ->
+            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                doSearch(view)
+                true
+            } else {
+                false
+            }
+        }
+    }
+
+    private fun doSearch(v: View) {
+        val query = binding.input.text.toString()
+        // Dismiss keyboard
+        dismissKeyboard(v.windowToken)
+        placesListViewModel.setQuery(query)
+    }
+
+    private fun dismissKeyboard(windowToken: IBinder) {
+        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        imm?.hideSoftInputFromWindow(windowToken, 0)
+    }
+
     override fun onResume() {
         super.onResume()
-        placesListViewModel.loadPlaces()
     }
 }
 

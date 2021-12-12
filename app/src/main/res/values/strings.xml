@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Android Assignment</string>
     <string name="retry">Retry</string>
+    <string name="search_hint">Type some places here</string>
 </resources>

@@ -2,7 +2,7 @@ package com.adyen.android.assignment.ui
 
 import app.cash.turbine.test
 import com.adyen.android.assignment.CoroutinesTestRule
-import com.adyen.android.assignment.model.Resource
+import com.adyen.android.assignment.repository.model.Resource
 import com.adyen.android.assignment.repository.PlacesRepository
 import com.adyen.android.assignment.repository.geolocalization.GeolocationRepository
 import com.adyen.android.assignment.repository.geolocalization.model.Location
@@ -78,7 +78,7 @@ class PlacesListUserCaseTest {
         val placeFlow = flow {
             emit(Resource.success(places))
         }
-        whenever(placesRepository.getVenueRecommendationsFlow(eq(location))).thenReturn(placeFlow)
+        whenever(placesRepository.getPlacesByLocationFlow(eq(location))).thenReturn(placeFlow)
     }
 
 

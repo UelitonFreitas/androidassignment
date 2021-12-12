@@ -14,4 +14,7 @@ interface PlacesService {
      */
     @GET("/v3/places/search")
     fun getVenueRecommendations(@QueryMap query: Map<String, String>): Call<ApiResponse>
+
+    @GET("v3/places/search")
+    fun getPlacesBYQuery(@QueryMap query: Map<String, String>): Call<ApiResponse>
 }
