@@ -1,3 +1,3 @@
 package com.adyen.android.assignment.repository.model
 
-data class Place(val name: String)
+data class Place(val id: String, val name: String)

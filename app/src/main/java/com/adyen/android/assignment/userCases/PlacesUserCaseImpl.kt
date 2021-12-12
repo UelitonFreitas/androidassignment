@@ -24,10 +24,13 @@ class PlacesUserCaseImpl @Inject constructor(
 
     override fun getPlacesFlow(): Flow<Resource<List<Place>>> =
         searchParametersFlow.flatMapLatest { searchEntry ->
+            val location = searchEntry.second
+            val query = searchEntry.first
             when {
-                searchEntry.second == Location.none() -> placesRepository.getPlaceListFlow()
-                searchEntry.first.isEmpty() -> placesRepository.getPlacesByLocationFlow(searchEntry.second)
-                else -> placesRepository.getPlacesByQueryFlow(searchEntry.first, searchEntry.second)
+                query.isEmpty() -> {
+                    placesRepository.getPlacesByLocationFlow(location)
+                }
+                else -> placesRepository.getPlacesByQueryFlow(query, location)
             }
         }
 

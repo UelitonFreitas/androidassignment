@@ -1,5 +1,6 @@
 package com.adyen.android.assignment.repository.dataBase
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -16,6 +17,9 @@ interface PlaceDao {
 
     @Query("SELECT * FROM place")
     fun getPlaces(): Flow<List<Place>>
+
+    @Query("SELECT * FROM place WHERE id in (:ids)")
+    fun getPlacesById(ids: List<String>): Flow<List<Place>>
 
     @Query("SELECT * FROM PlacesSearchResult WHERE `query` = :query")
     fun findSearchResult(query: String): Flow<PlacesSearchResult>

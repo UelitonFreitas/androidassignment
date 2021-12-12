@@ -61,7 +61,7 @@ class PlacesServicesApiImpl @Inject constructor(val dispatcherProvider: Dispatch
                 .build()
 
             instance.getVenueRecommendations(query).execute().body()?.results?.map { place ->
-                Place(place.name)
+                Place(place.fsq_id, place.name)
             } ?: emptyList()
         }
 
@@ -97,7 +97,7 @@ class PlacesServicesApiImpl @Inject constructor(val dispatcherProvider: Dispatch
                 .build()
 
             instance.getPlacesBYQuery(query).execute().body()?.results?.map { place ->
-                Place(place.name)
+                Place(place.fsq_id, place.name)
             } ?: emptyList()
         }
 }

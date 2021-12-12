@@ -2,14 +2,12 @@ package com.adyen.android.assignment.repository
 
 import com.adyen.android.assignment.api.PlacesServicesApi
 import com.adyen.android.assignment.dispatchers.DispatcherProvider
-import com.adyen.android.assignment.repository.model.Resource
-import com.adyen.android.assignment.repository.model.Status
 import com.adyen.android.assignment.repository.dataBase.PlaceDao
 import com.adyen.android.assignment.repository.geolocalization.model.Location
 import com.adyen.android.assignment.repository.model.Place
-import com.adyen.android.assignment.repository.model.PlaceSearchResult
+import com.adyen.android.assignment.repository.model.Resource
+import com.adyen.android.assignment.repository.model.Status
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class PlacesRepositoryImpl @Inject constructor(
@@ -19,20 +17,10 @@ class PlacesRepositoryImpl @Inject constructor(
 ) :
     PlacesRepository() {
 
-//    override suspend fun getVenueRecommendations(location: Location) =
-//        withContext(dispatcherProvider.io()) {
-//            val places = placesServicesApi.getVenueRecommendations(location)
-//            placeDao.insertPlaces(places.map {
-//                com.adyen.android.assignment.repository.dataBase.model.Place(
-//                    it.name
-//                )
-//            })
-//        }
-
     override fun getPlaceListFlow() = places
 
     val places = placeDao.getPlaces()
-        .map { placesList -> Resource.success(placesList.map { Place(it.name) }) }
+        .map { placesList -> Resource.success(placesList.map { Place(it.id, it.name) }) }
 
     override fun getPlacesByLocationFlow(location: Location): Flow<Resource<List<Place>>> =
         places.combine(placesServicesApi.getPlacesByLocationFlow(location)) { placesFromDb, placesFromApi ->
@@ -42,7 +30,10 @@ class PlacesRepositoryImpl @Inject constructor(
                 Status.SUCCESS -> {
                     placesFromApi.data?.let { places ->
                         placeDao.insertPlaces(places.map {
-                            com.adyen.android.assignment.repository.dataBase.model.Place(it.name)
+                            com.adyen.android.assignment.repository.dataBase.model.Place(
+                                it.id,
+                                it.name
+                            )
                         })
                     }
                     placesFromDb
@@ -57,10 +48,16 @@ class PlacesRepositoryImpl @Inject constructor(
         query: String,
         location: Location
     ): Flow<Resource<List<Place>>> =
-        placesServicesApi.getPlacesByQueryFlow(query, location)
-            .flowOn(dispatcherProvider.io())
-
-    private fun getPlaceSearchResultFlow(query: String): Flow<Resource<PlaceSearchResult>> = flow {
-        placeDao.findSearchResult(query)
-    }
+        placesServicesApi.getPlacesByQueryFlow(query, location).onEach { queriedPlacesFromApi ->
+            if (queriedPlacesFromApi.status == Status.SUCCESS) {
+                queriedPlacesFromApi.data?.let { places ->
+                    placeDao.insertPlaces(places.map {
+                        com.adyen.android.assignment.repository.dataBase.model.Place(
+                            it.id,
+                            it.name
+                        )
+                    })
+                }
+            }
+        }.flowOn(dispatcherProvider.io())
 }

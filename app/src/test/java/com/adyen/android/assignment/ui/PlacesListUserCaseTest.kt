@@ -26,26 +26,6 @@ class PlacesListUserCaseTest {
     private val geolocationRepository: GeolocationRepository = mock()
 
     @Test
-    fun `should not load places without location`() =
-        coroutinesTestRule.testDispatcher.runBlockingTest {
-
-            val locationFlow = flow<Location> { }
-            whenever(geolocationRepository.fetchLocations()).thenReturn(locationFlow)
-
-            val placeFlow = flow<Resource<List<Place>>> { }
-            whenever(placesRepository.getPlaceListFlow()).thenReturn(placeFlow)
-
-            val userCase = PlacesUserCaseImpl(
-                placesRepository,
-                geolocationRepository
-            )
-
-            verify(placesRepository, never()).getVenueRecommendations(any())
-
-            userCase.getPlacesFlow().test { awaitComplete() }
-        }
-
-    @Test
     fun `should load places for a location`() = coroutinesTestRule.testDispatcher.runBlockingTest {
 
         val location = Location(1.0, 1.0)
@@ -62,16 +42,40 @@ class PlacesListUserCaseTest {
 
         userCase.getPlacesFlow().test {
             assertEquals(Resource.success(expectedPlaces), awaitItem())
-            awaitComplete()
         }
     }
+
+    @Test
+    fun `should load queried places for a location`() =
+        coroutinesTestRule.testDispatcher.runBlockingTest {
+
+            val query = "Coffee"
+            val location = Location(1.0, 1.0)
+            val expectedPlaces = createPlaces(3)
+
+            mockLocationRepositoryFlow(location)
+
+            mockPlacesRepositoryFlowQueryWithLocation(query.lowercase(), location, expectedPlaces)
+
+            val userCase = PlacesUserCaseImpl(
+                placesRepository,
+                geolocationRepository
+            )
+
+            userCase.setQuery(query)
+
+            userCase.getPlacesFlow().test {
+                assertEquals(Resource.success(expectedPlaces), awaitItem())
+            }
+        }
+
 
     private suspend fun mockPlacesRepositoryFlow(places: List<Place> = createPlaces(3)) {
         val placeFlow = flow { emit(Resource.success(places)) }
         whenever(placesRepository.getPlaceListFlow()).thenReturn(placeFlow)
     }
 
-    private suspend fun mockPlacesRepositoryFlowWithLocation(
+    private fun mockPlacesRepositoryFlowWithLocation(
         location: Location,
         places: List<Place> = createPlaces(3)
     ) {
@@ -81,14 +85,28 @@ class PlacesListUserCaseTest {
         whenever(placesRepository.getPlacesByLocationFlow(eq(location))).thenReturn(placeFlow)
     }
 
+    private fun mockPlacesRepositoryFlowQueryWithLocation(
+        query: String,
+        location: Location,
+        places: List<Place> = createPlaces(3)
+    ) {
+        val placeFlow = flow {
+            emit(Resource.success(places))
+        }
+
+        whenever(placesRepository.getPlacesByQueryFlow(eq(query), eq(location))).thenReturn(
+            placeFlow
+        )
+    }
+
 
     private fun mockLocationRepositoryFlow(location: Location) {
         val locationFlow = flow { emit(location) }
         whenever(geolocationRepository.fetchLocations()).thenReturn(locationFlow)
     }
 
-    private fun createPlace(name: String) = Place(name)
+    private fun createPlace(id: String, name: String) = Place(id, name)
 
     private fun createPlaces(amount: Int) =
-        (0 until amount).map { index -> createPlace("Place-$index") }
+        (0 until amount).map { index -> createPlace("ID-$index", "Place-$index") }
 }
