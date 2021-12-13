@@ -1,7 +1,7 @@
 package com.adyen.android.assignment.userCases
 
-import com.adyen.android.assignment.repository.PlacesRepository
-import com.adyen.android.assignment.repository.geolocalization.GeolocationRepository
+import com.adyen.repositories.places.PlacesRepository
+import com.adyen.repositories.geolocation.GeolocationRepository
 import com.adyen.model.Location
 import com.adyen.model.Place
 import com.adyen.model.Resource

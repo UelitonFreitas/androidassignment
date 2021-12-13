@@ -4,8 +4,8 @@ import app.cash.turbine.test
 import com.adyen.android.assignment.CoroutinesTestRule
 import com.adyen.android.assignment.TestUtil.createPlaces
 import com.adyen.model.Resource
-import com.adyen.android.assignment.repository.PlacesRepository
-import com.adyen.android.assignment.repository.geolocalization.GeolocationRepository
+import com.adyen.repositories.places.PlacesRepository
+import com.adyen.repositories.geolocation.GeolocationRepository
 import com.adyen.model.Location
 import com.adyen.model.Place
 import junit.framework.Assert.assertEquals

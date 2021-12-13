@@ -1,4 +1,4 @@
-package com.adyen.android.assignment.repository.geolocalization
+package com.adyen.repositories.geolocation
 
 import com.adyen.model.Location
 import kotlinx.coroutines.flow.Flow

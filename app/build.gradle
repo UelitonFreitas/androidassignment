@@ -91,6 +91,7 @@ dependencies {
     implementation project(':executors')
     implementation project(':envvar')
     implementation project(":di")
+    implementation project(":data:repositories")
 
     implementation deps.app_compat
     implementation deps.recyclerview

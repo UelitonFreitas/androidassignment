@@ -10,6 +10,7 @@ import com.adyen.android.assignment.repository.dataBase.PlaceDao
 import com.adyen.model.Location
 import com.adyen.model.Place
 import com.adyen.model.Resource
+import com.adyen.android.assignment.repository.dataBase.PlacesRepositoryImpl
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
