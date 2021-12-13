@@ -84,8 +84,10 @@ class PlacesListFragmentTest {
         placeList.postValue(places)
         showLoading.postValue(false)
 
-        Espresso.onView(listMatcher().atPosition(0))
-            .check(ViewAssertions.matches(ViewMatchers.hasDescendant(ViewMatchers.withText("Place-0"))))
+        places.forEachIndexed { index, place ->
+            Espresso.onView(listMatcher().atPosition(index))
+                .check(ViewAssertions.matches(ViewMatchers.hasDescendant(ViewMatchers.withText(place.name))))
+        }
 
         Espresso.onView(withId(R.id.progress_bar))
             .check(ViewAssertions.matches(CoreMatchers.not(ViewMatchers.isDisplayed())))
@@ -97,8 +99,10 @@ class PlacesListFragmentTest {
         placeList.postValue(places)
         showLoading.postValue(true)
 
-        Espresso.onView(listMatcher().atPosition(0))
-            .check(ViewAssertions.matches(ViewMatchers.hasDescendant(ViewMatchers.withText("Place-0"))))
+        places.forEachIndexed { index, place ->
+            Espresso.onView(listMatcher().atPosition(index))
+                .check(ViewAssertions.matches(ViewMatchers.hasDescendant(ViewMatchers.withText(place.name))))
+        }
 
         Espresso.onView(withId(R.id.progress_bar))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
@@ -111,8 +115,10 @@ class PlacesListFragmentTest {
         showLoading.postValue(false)
         showErrorMessage.postValue("Error on load Places from API")
 
-        Espresso.onView(listMatcher().atPosition(0))
-            .check(ViewAssertions.matches(ViewMatchers.hasDescendant(ViewMatchers.withText("Place-0"))))
+        places.forEachIndexed { index, place ->
+            Espresso.onView(listMatcher().atPosition(index))
+                .check(ViewAssertions.matches(ViewMatchers.hasDescendant(ViewMatchers.withText(place.name))))
+        }
 
         Espresso.onView(withId(R.id.progress_bar))
             .check(ViewAssertions.matches(CoreMatchers.not(ViewMatchers.isDisplayed())))
