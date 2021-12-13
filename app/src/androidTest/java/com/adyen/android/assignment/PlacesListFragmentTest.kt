@@ -1,11 +1,13 @@
 package com.adyen.android.assignment
 
+import android.view.KeyEvent
 import android.view.View
 import androidx.databinding.DataBindingComponent
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.espresso.Espresso
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -125,6 +127,16 @@ class PlacesListFragmentTest {
 
         Espresso.onView(withId(com.google.android.material.R.id.snackbar_text))
             .check(ViewAssertions.matches(withText(R.string.error_message)))
+    }
+
+    @Test
+    fun shouldSearch() {
+        Espresso.onView(withId(R.id.input)).perform(
+            ViewActions.typeText("foo"),
+            ViewActions.pressKey(KeyEvent.KEYCODE_ENTER)
+        )
+
+        Mockito.verify(viewModel).setQuery("foo")
     }
 
     private fun listMatcher(): RecyclerViewMatcher {
