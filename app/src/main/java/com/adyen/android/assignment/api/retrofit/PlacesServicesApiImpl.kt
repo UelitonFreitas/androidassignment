@@ -1,5 +1,4 @@
 import com.adyen.android.assignment.BuildConfig
-import com.adyen.android.assignment.api.PlacesServicesApi
 import com.adyen.android.assignment.api.VenueRecommendationsQueryBuilder
 import com.adyen.android.assignment.api.retrofit.PlacesService
 import com.adyen.android.assignment.dispatchers.DispatcherProvider
@@ -18,7 +17,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Inject
 
 class PlacesServicesApiImpl @Inject constructor(val dispatcherProvider: DispatcherProvider) :
-    PlacesServicesApi {
+    com.adyen.android.assignment.api.PlacesServicesApi {
 
     companion object {
         private val retrofit by lazy {

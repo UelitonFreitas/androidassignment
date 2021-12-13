@@ -1,4 +1,4 @@
-package com.adyen.android.assignment.api.model
+package com.adyen.api.model
 
 import com.google.gson.annotations.SerializedName
 

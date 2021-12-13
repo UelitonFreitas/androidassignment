@@ -3,6 +3,7 @@ package com.adyen.android.assignment.api
 import com.adyen.android.assignment.repository.model.Resource
 import com.adyen.android.assignment.repository.geolocalization.model.Location
 import com.adyen.android.assignment.repository.model.Place
+
 import kotlinx.coroutines.flow.Flow
 
 interface PlacesServicesApi {

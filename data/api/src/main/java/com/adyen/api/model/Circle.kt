@@ -1,6 +1,5 @@
-package com.adyen.android.assignment.api.model
+package com.adyen.api.model
 
-import com.adyen.android.assignment.api.model.Center
 import com.google.gson.annotations.SerializedName
 
 data class Circle (

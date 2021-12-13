@@ -1,6 +1,6 @@
 package com.adyen.android.assignment.api.retrofit
 
-import com.adyen.android.assignment.api.model.ApiResponse
+import com.adyen.api.model.ApiResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.QueryMap
