@@ -4,7 +4,7 @@
 
     <data>
 
-        <import type="com.adyen.android.assignment.repository.model.Place" />
+        <import type="com.adyen.model.Place" />
 
         <import type="java.util.List" />
 

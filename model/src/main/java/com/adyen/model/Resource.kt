@@ -1,4 +1,4 @@
-package com.adyen.android.assignment.repository.model
+package com.adyen.model
 
 
 data class Resource<out T>(

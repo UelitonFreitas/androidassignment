@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import com.adyen.android.assignment.R
 import com.adyen.android.assignment.databinding.PlaceItemBinding
 import com.adyen.android.assignment.executors.AppExecutors
-import com.adyen.android.assignment.repository.model.Place
+import com.adyen.model.Place
 
 class PlacesListAdapter(
     private val dataBindingComponent: DataBindingComponent,

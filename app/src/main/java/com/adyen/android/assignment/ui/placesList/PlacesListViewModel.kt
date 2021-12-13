@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
-import com.adyen.android.assignment.repository.model.Place
-import com.adyen.android.assignment.repository.model.Status
+import com.adyen.model.Place
+import com.adyen.model.Status
 import com.adyen.android.assignment.userCases.PlacesUserCase
 import com.adyen.android.assignment.testing.OpenForTesting
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -1,6 +1,6 @@
 package com.adyen.android.assignment
 
-import com.adyen.android.assignment.repository.model.Place
+import com.adyen.model.Place
 
 
 object TestUtil {

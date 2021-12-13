@@ -1,9 +1,8 @@
-package com.adyen.android.assignment.api
+package com.adyen.api
 
-import com.adyen.android.assignment.repository.model.Resource
-import com.adyen.android.assignment.repository.geolocalization.model.Location
-import com.adyen.android.assignment.repository.model.Place
-
+import com.adyen.model.Location
+import com.adyen.model.Place
+import com.adyen.model.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface PlacesServicesApi {

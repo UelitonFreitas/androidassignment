@@ -1,2 +1,4 @@
 include ':app', ':cashregister'
 include ':data:api'
+include ':model'
+include ':dispatchers'

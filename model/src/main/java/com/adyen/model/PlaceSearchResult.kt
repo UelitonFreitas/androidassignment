@@ -1,3 +1,3 @@
-package com.adyen.android.assignment.repository.model
+package com.adyen.model
 
 class PlaceSearchResult(val query: String, placesIds: List<String>)

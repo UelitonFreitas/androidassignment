@@ -5,11 +5,11 @@ import com.adyen.android.assignment.CoroutinesTestRule
 import com.adyen.android.assignment.TestUtil.createDbPlace
 import com.adyen.android.assignment.TestUtil.createDbPlaces
 import com.adyen.android.assignment.TestUtil.createPlaces
-import com.adyen.android.assignment.api.PlacesServicesApi
+import com.adyen.api.PlacesServicesApi
 import com.adyen.android.assignment.repository.dataBase.PlaceDao
-import com.adyen.android.assignment.repository.geolocalization.model.Location
-import com.adyen.android.assignment.repository.model.Place
-import com.adyen.android.assignment.repository.model.Resource
+import com.adyen.model.Location
+import com.adyen.model.Place
+import com.adyen.model.Resource
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow

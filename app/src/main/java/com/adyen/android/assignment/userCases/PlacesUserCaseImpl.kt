@@ -2,9 +2,9 @@ package com.adyen.android.assignment.userCases
 
 import com.adyen.android.assignment.repository.PlacesRepository
 import com.adyen.android.assignment.repository.geolocalization.GeolocationRepository
-import com.adyen.android.assignment.repository.geolocalization.model.Location
-import com.adyen.android.assignment.repository.model.Place
-import com.adyen.android.assignment.repository.model.Resource
+import com.adyen.model.Location
+import com.adyen.model.Place
+import com.adyen.model.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine

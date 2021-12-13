@@ -1,4 +1,4 @@
-package com.adyen.android.assignment.api.retrofit
+package com.adyen.api.retrofit
 
 import com.adyen.api.model.ApiResponse
 import retrofit2.Call

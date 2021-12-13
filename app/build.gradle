@@ -3,7 +3,6 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-allopen'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
-apply from: "local.gradle"
 
 if (!file("local.gradle").exists()) {
     exec {
@@ -28,8 +27,6 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "com.adyen.android.assignment.util.AssignmentTestRunner"
-
-        buildConfigField "String", "FOURSQUARE_BASE_URL", "\"https://api.foursquare.com\""
     }
 
     buildTypes {
@@ -86,6 +83,8 @@ dependencies {
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation project(":data:api")
+    implementation project(":model")
+    implementation project(':dispatchers')
 
     implementation deps.app_compat
     implementation deps.recyclerview
@@ -101,7 +100,6 @@ dependencies {
     implementation deps.browser
     implementation deps.retrofit.runtime
     implementation deps.retrofit.gson
-    implementation deps.okhttp_logging_interceptor
     implementation deps.glide.runtime
     implementation deps.room.roomktx
 

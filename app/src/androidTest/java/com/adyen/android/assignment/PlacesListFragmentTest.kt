@@ -15,7 +15,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.adyen.android.assignment.binding.FragmentBindingAdapters
-import com.adyen.android.assignment.repository.model.Place
+import com.adyen.model.Place
 import com.adyen.android.assignment.ui.placesList.PlaceListFragment
 import com.adyen.android.assignment.ui.placesList.PlacesListViewModel
 import com.adyen.android.assignment.util.*

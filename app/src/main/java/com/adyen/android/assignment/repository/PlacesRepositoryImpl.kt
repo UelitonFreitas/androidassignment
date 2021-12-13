@@ -1,12 +1,12 @@
 package com.adyen.android.assignment.repository
 
-import com.adyen.android.assignment.api.PlacesServicesApi
-import com.adyen.android.assignment.dispatchers.DispatcherProvider
+import com.adyen.api.PlacesServicesApi
+import com.adyen.dispatchers.DispatcherProvider
 import com.adyen.android.assignment.repository.dataBase.PlaceDao
-import com.adyen.android.assignment.repository.geolocalization.model.Location
-import com.adyen.android.assignment.repository.model.Place
-import com.adyen.android.assignment.repository.model.Resource
-import com.adyen.android.assignment.repository.model.Status
+import com.adyen.model.Location
+import com.adyen.model.Place
+import com.adyen.model.Resource
+import com.adyen.model.Status
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 

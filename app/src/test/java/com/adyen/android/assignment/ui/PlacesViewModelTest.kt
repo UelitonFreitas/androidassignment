@@ -4,8 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.adyen.android.assignment.CoroutinesTestRule
 import com.adyen.android.assignment.TestUtil
-import com.adyen.android.assignment.repository.model.Place
-import com.adyen.android.assignment.repository.model.Resource
+import com.adyen.model.Place
+import com.adyen.model.Resource
 import com.adyen.android.assignment.ui.placesList.PlacesListViewModel
 import com.adyen.android.assignment.userCases.PlacesUserCase
 import junit.framework.Assert.assertEquals

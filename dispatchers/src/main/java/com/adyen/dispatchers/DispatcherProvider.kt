@@ -1,4 +1,4 @@
-package com.adyen.android.assignment.dispatchers
+package com.adyen.dispatchers
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers

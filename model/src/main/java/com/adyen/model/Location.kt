@@ -1,4 +1,4 @@
-package com.adyen.android.assignment.repository.geolocalization.model
+package com.adyen.model
 
 data class Location(
     val latitude: Double,

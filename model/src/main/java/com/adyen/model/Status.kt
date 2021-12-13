@@ -1,4 +1,4 @@
-package com.adyen.android.assignment.repository.model
+package com.adyen.model
 
 enum class Status {
     SUCCESS,

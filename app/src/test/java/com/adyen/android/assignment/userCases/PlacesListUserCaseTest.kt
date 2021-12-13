@@ -3,11 +3,11 @@ package com.adyen.android.assignment.userCases
 import app.cash.turbine.test
 import com.adyen.android.assignment.CoroutinesTestRule
 import com.adyen.android.assignment.TestUtil.createPlaces
-import com.adyen.android.assignment.repository.model.Resource
+import com.adyen.model.Resource
 import com.adyen.android.assignment.repository.PlacesRepository
 import com.adyen.android.assignment.repository.geolocalization.GeolocationRepository
-import com.adyen.android.assignment.repository.geolocalization.model.Location
-import com.adyen.android.assignment.repository.model.Place
+import com.adyen.model.Location
+import com.adyen.model.Place
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow

@@ -7,7 +7,7 @@
 
         <variable
             name="place"
-            type="com.adyen.android.assignment.repository.model.Place" />
+            type="com.adyen.model.Place" />
     </data>
 
 

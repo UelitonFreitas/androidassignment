@@ -1,6 +1,6 @@
 package com.adyen.android.assignment
 
-import com.adyen.android.assignment.dispatchers.DispatcherProvider
+import com.adyen.dispatchers.DispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

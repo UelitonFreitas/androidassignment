@@ -1,7 +1,7 @@
 package com.adyen.android.assignment
 
-import PlacesServicesApiImpl
-import com.adyen.android.assignment.api.VenueRecommendationsQueryBuilder
+import com.adyen.api.retrofit.PlacesServicesApiImpl
+import com.adyen.api.VenueRecommendationsQueryBuilder
 import org.junit.Assert.*
 import org.junit.Test
 

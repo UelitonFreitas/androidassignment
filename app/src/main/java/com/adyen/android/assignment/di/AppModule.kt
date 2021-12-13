@@ -1,11 +1,11 @@
 package com.adyen.android.assignment.di
 
-import PlacesServicesApiImpl
+import com.adyen.api.retrofit.PlacesServicesApiImpl
 import android.app.Application
 import androidx.room.Room
-import com.adyen.android.assignment.api.PlacesServicesApi
-import com.adyen.android.assignment.dispatchers.DefaultDispatcherProvider
-import com.adyen.android.assignment.dispatchers.DispatcherProvider
+import com.adyen.api.PlacesServicesApi
+import com.adyen.dispatchers.DefaultDispatcherProvider
+import com.adyen.dispatchers.DispatcherProvider
 import com.adyen.android.assignment.repository.PlacesRepository
 import com.adyen.android.assignment.repository.PlacesRepositoryImpl
 import com.adyen.android.assignment.repository.dataBase.PlaceDao

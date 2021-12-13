@@ -15,15 +15,6 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
-
-        Properties properties = new Properties()
-        if (project.rootProject.file('local.properties').canRead()) {
-            properties.load(project.rootProject.file("local.properties").newDataInputStream())
-        }
-
-
-        buildConfigField 'String', 'FOUR_SQUARE_API_KEY', properties.getProperty('FOUR_SQUARE_API_KEY', '"xxx"')
-        buildConfigField 'String', 'FOURSQUARE_BASE_URL', properties.getProperty('FOURSQUARE_BASE_URL', "\"https://api.foursquare.com\"")
     }
 
     buildTypes {
@@ -32,24 +23,19 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 
 dependencies {
-    implementation project(":model")
-    implementation project(':dispatchers')
-
-    implementation deps.lifecycle.livedata_ktx
     implementation deps.kotlin.stdlib
-    api deps.retrofit.runtime
-    implementation deps.retrofit.gson
-    implementation deps.timber
-    implementation deps.okhttp_logging_interceptor
 
     implementation deps.dagger.runtime
     kapt deps.dagger.compiler
 
     androidTestImplementation deps.atsl.ext_junit
     androidTestImplementation deps.espresso.core
+
+    implementation deps.coroutines.android
 
     testImplementation deps.junit
 }

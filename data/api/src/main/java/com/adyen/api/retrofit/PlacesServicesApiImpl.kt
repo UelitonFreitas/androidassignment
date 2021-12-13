@@ -1,10 +1,12 @@
-import com.adyen.android.assignment.BuildConfig
-import com.adyen.android.assignment.api.VenueRecommendationsQueryBuilder
-import com.adyen.android.assignment.api.retrofit.PlacesService
-import com.adyen.android.assignment.dispatchers.DispatcherProvider
-import com.adyen.android.assignment.repository.model.Resource
-import com.adyen.android.assignment.repository.geolocalization.model.Location
-import com.adyen.android.assignment.repository.model.Place
+package com.adyen.api.retrofit
+
+import com.adyen.dispatchers.DispatcherProvider
+import com.adyen.model.Location
+import com.adyen.model.Place
+import com.adyen.model.Resource
+import com.adyen.api.BuildConfig
+import com.adyen.api.PlacesServicesApi
+import com.adyen.api.VenueRecommendationsQueryBuilder
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
@@ -17,7 +19,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Inject
 
 class PlacesServicesApiImpl @Inject constructor(val dispatcherProvider: DispatcherProvider) :
-    com.adyen.android.assignment.api.PlacesServicesApi {
+    PlacesServicesApi {
 
     companion object {
         private val retrofit by lazy {
