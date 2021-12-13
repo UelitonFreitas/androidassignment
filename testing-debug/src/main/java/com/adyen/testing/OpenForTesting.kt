@@ -1,4 +1,4 @@
-package com.adyen.android.assignment.testing
+package com.adyen.testing
 
 /**
  * This annotation allows us to open some classes for mocking purposes while they are final in

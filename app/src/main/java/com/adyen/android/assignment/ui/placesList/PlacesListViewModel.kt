@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
+import com.adyen.android.assignment.userCases.PlacesUserCase
 import com.adyen.model.Place
 import com.adyen.model.Status
-import com.adyen.android.assignment.userCases.PlacesUserCase
-import com.adyen.android.assignment.testing.OpenForTesting
+import com.adyen.testing.OpenForTesting
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.mapLatest
 import javax.inject.Inject

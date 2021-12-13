@@ -15,10 +15,10 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.adyen.android.assignment.binding.FragmentBindingAdapters
-import com.adyen.model.Place
 import com.adyen.android.assignment.ui.placesList.PlaceListFragment
 import com.adyen.android.assignment.ui.placesList.PlacesListViewModel
 import com.adyen.android.assignment.util.*
+import com.adyen.model.Place
 import org.hamcrest.CoreMatchers
 import org.junit.Before
 import org.junit.Rule

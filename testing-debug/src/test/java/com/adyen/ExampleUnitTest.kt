@@ -1,4 +1,4 @@
-package com.adyen.repositories
+package com.adyen
 
 import org.junit.Test
 

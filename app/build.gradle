@@ -14,7 +14,7 @@ if (!file("local.gradle").exists()) {
 
 allOpen {
     // allows mocking for classes w/o directly opening them for release builds
-    annotation 'com.adyen.android.assignment.testing.OpenClass'
+    annotation 'com.adyen.testing.OpenClass'
 }
 android {
     compileSdkVersion build_versions.target_sdk
@@ -92,6 +92,9 @@ dependencies {
     implementation project(':envvar')
     implementation project(":di")
     implementation project(":data:repositories")
+
+    releaseImplementation project(":testing-release")
+    debugImplementation project(":testing-debug")
 
     implementation deps.app_compat
     implementation deps.recyclerview
