@@ -27,7 +27,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.adyen.android.assignment.util.AssignmentTestRunner"
 
         buildConfigField "String", "FOURSQUARE_BASE_URL", "\"https://api.foursquare.com\""
     }
@@ -64,6 +64,22 @@ android {
         androidTest.java.srcDirs += "src/test-common/java"
         test.java.srcDirs += "src/test-common/java"
     }
+
+    packagingOptions {
+        exclude "**/attach_hotspot_windows.dll"
+        exclude 'META-INF/*'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+        exclude("META-INF/*.kotlin_module")
+        exclude("META-INF/licenses/ASM")
+    }
+
 }
 
 dependencies {
@@ -122,6 +138,8 @@ dependencies {
     androidTestImplementation deps.recyclerview
     androidTestImplementation deps.cardview
     androidTestImplementation deps.material
+    androidTestImplementation deps.coroutines.test
+    androidTestImplementation deps.mockito.kotlin
 
     androidTestImplementation deps.espresso.core
     androidTestImplementation deps.espresso.contrib

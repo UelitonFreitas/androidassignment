@@ -32,7 +32,7 @@ class PlaceListFragment : Fragment(), Injectable {
     @Inject
     lateinit var appExecutors: AppExecutors
 
-    private var dataBindingComponent: DataBindingComponent = FragmentDataBindingComponent(this)
+    var dataBindingComponent: DataBindingComponent = FragmentDataBindingComponent(this)
 
     var binding by autoCleared<FragmentPlacesListBinding>()
 

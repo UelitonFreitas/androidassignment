@@ -4,15 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
-import com.adyen.android.assignment.repository.model.Status
 import com.adyen.android.assignment.repository.model.Place
+import com.adyen.android.assignment.repository.model.Status
 import com.adyen.android.assignment.userCases.PlacesUserCase
+import com.adyen.android.assignment.testing.OpenForTesting
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.mapLatest
-import java.util.*
 import javax.inject.Inject
 
+@OpenForTesting
 class PlacesListViewModel @Inject constructor(
     private val placesUserCase: PlacesUserCase
 ) : ViewModel() {
