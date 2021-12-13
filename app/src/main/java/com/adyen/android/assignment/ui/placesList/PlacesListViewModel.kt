@@ -24,7 +24,7 @@ class PlacesListViewModel @Inject constructor(
     val snackbar: LiveData<String?>
         get() = _snackbar.asLiveData()
 
-    val query = placesUserCase.query.asLiveData()
+    val query = placesUserCase.getQueryFLow().asLiveData()
 
     val places: LiveData<List<Place>> = placesUserCase.getPlacesFlow().mapLatest { resource ->
         when (resource.status) {

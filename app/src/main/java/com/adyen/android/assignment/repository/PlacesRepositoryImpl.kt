@@ -36,7 +36,7 @@ class PlacesRepositoryImpl @Inject constructor(
                             )
                         })
                     }
-                    placesFromDb
+                    placesFromApi
                 }
                 Status.ERROR ->
                     Resource.error(placesFromDb.data)
@@ -52,10 +52,7 @@ class PlacesRepositoryImpl @Inject constructor(
             if (queriedPlacesFromApi.status == Status.SUCCESS) {
                 queriedPlacesFromApi.data?.let { places ->
                     placeDao.insertPlaces(places.map {
-                        com.adyen.android.assignment.repository.dataBase.model.Place(
-                            it.id,
-                            it.name
-                        )
+                        com.adyen.android.assignment.repository.dataBase.model.Place(it.id, it.name)
                     })
                 }
             }

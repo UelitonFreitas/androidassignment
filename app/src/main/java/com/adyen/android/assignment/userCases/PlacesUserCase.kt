@@ -6,10 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
 abstract class PlacesUserCase {
-
-    var query = MutableStateFlow("")
-        private set
-
+    abstract fun getQueryFLow(): Flow<String>
     abstract fun getPlacesFlow(): Flow<Resource<List<Place>>>
     abstract fun setQuery(query: String)
 }

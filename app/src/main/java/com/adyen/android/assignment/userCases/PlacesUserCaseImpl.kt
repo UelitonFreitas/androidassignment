@@ -6,6 +6,7 @@ import com.adyen.android.assignment.repository.geolocalization.model.Location
 import com.adyen.android.assignment.repository.model.Place
 import com.adyen.android.assignment.repository.model.Resource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import java.util.*
@@ -16,6 +17,10 @@ class PlacesUserCaseImpl @Inject constructor(
     private val geolocationRepository: GeolocationRepository
 ) : PlacesUserCase() {
 
+
+    private var query = MutableStateFlow("")
+
+    override fun getQueryFLow(): Flow<String> = query
 
     private val searchParametersFlow: Flow<SearchEntry> =
         this.query.combine(geolocationRepository.fetchLocations()) { query, location ->

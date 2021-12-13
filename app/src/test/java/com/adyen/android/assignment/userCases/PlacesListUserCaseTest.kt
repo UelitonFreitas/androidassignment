@@ -1,13 +1,13 @@
-package com.adyen.android.assignment.ui
+package com.adyen.android.assignment.userCases
 
 import app.cash.turbine.test
 import com.adyen.android.assignment.CoroutinesTestRule
+import com.adyen.android.assignment.TestUtil.createPlaces
 import com.adyen.android.assignment.repository.model.Resource
 import com.adyen.android.assignment.repository.PlacesRepository
 import com.adyen.android.assignment.repository.geolocalization.GeolocationRepository
 import com.adyen.android.assignment.repository.geolocalization.model.Location
 import com.adyen.android.assignment.repository.model.Place
-import com.adyen.android.assignment.userCases.PlacesUserCaseImpl
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
@@ -104,9 +104,4 @@ class PlacesListUserCaseTest {
         val locationFlow = flow { emit(location) }
         whenever(geolocationRepository.fetchLocations()).thenReturn(locationFlow)
     }
-
-    private fun createPlace(id: String, name: String) = Place(id, name)
-
-    private fun createPlaces(amount: Int) =
-        (0 until amount).map { index -> createPlace("ID-$index", "Place-$index") }
 }

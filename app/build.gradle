@@ -118,7 +118,6 @@ dependencies {
     androidTestImplementation deps.atsl.ext_junit
     androidTestImplementation deps.atsl.runner
     androidTestImplementation deps.atsl.rules
-
     androidTestImplementation deps.app_compat
     androidTestImplementation deps.recyclerview
     androidTestImplementation deps.cardview
