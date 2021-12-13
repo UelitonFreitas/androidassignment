@@ -16,3 +16,4 @@ General rule of thumb: quality over quantity.
 - Was prioritized architecture in this project due time. So, the UI can be improved a lot :D
 - Was Chosen MVVM architecture with user coses from clean architecture.
 - You should put your Foursquare API in '/local.properties' in the project root.
+- Make sure that the project run with JDK 11 in AndroidStudio and terminal.

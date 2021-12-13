@@ -1,6 +1,6 @@
 package com.adyen.android.assignment.util
 
-import com.adyen.android.assignment.executors.AppExecutors
+import com.adyen.executors.AppExecutors
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit

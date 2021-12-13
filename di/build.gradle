@@ -23,22 +23,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 
 dependencies {
-    implementation project(":model")
-    implementation project(':dispatchers')
-    implementation project(':envvar')
-
-    implementation deps.lifecycle.livedata_ktx
     implementation deps.kotlin.stdlib
-    api deps.retrofit.runtime
-    implementation deps.retrofit.gson
-    implementation deps.timber
-    implementation deps.okhttp_logging_interceptor
-
-    implementation deps.dagger.runtime
-    kapt deps.dagger.compiler
 
     androidTestImplementation deps.atsl.ext_junit
     androidTestImplementation deps.espresso.core

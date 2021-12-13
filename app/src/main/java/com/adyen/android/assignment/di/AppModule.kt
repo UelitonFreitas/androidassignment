@@ -1,11 +1,8 @@
 package com.adyen.android.assignment.di
 
-import com.adyen.api.retrofit.PlacesServicesApiImpl
 import android.app.Application
 import androidx.room.Room
-import com.adyen.api.PlacesServicesApi
-import com.adyen.dispatchers.DefaultDispatcherProvider
-import com.adyen.dispatchers.DispatcherProvider
+import com.adyen.android.assignment.BuildConfig
 import com.adyen.android.assignment.repository.PlacesRepository
 import com.adyen.android.assignment.repository.PlacesRepositoryImpl
 import com.adyen.android.assignment.repository.dataBase.PlaceDao
@@ -14,6 +11,11 @@ import com.adyen.android.assignment.repository.geolocalization.GeolocationReposi
 import com.adyen.android.assignment.repository.geolocalization.GeolocationRepositoryImpl
 import com.adyen.android.assignment.userCases.PlacesUserCase
 import com.adyen.android.assignment.userCases.PlacesUserCaseImpl
+import com.adyen.api.PlacesServicesApi
+import com.adyen.api.retrofit.PlacesServicesApiImpl
+import com.adyen.dispatchers.DefaultDispatcherProvider
+import com.adyen.dispatchers.DispatcherProvider
+import com.adyen.envvar.EnvVar
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -38,8 +40,11 @@ class AppModule {
 
     @Singleton
     @Provides
-    fun providePlacesService(dispatcherProvider: DispatcherProvider): PlacesServicesApi {
-        return PlacesServicesApiImpl(dispatcherProvider)
+    fun providePlacesService(
+        dispatcherProvider: DispatcherProvider,
+        envVar: EnvVar
+    ): PlacesServicesApi {
+        return PlacesServicesApiImpl(dispatcherProvider, envVar)
     }
 
     @Singleton
@@ -71,5 +76,14 @@ class AppModule {
     @Provides
     fun providePlaceDao(db: PlacesDatabase): PlaceDao {
         return db.placeDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideEnvVar(): EnvVar {
+        return object : EnvVar {
+            override val FOUR_SQUARE_API_KEY = BuildConfig.FOUR_SQUARE_API_KEY
+            override val FOURSQUARE_BASE_URL = BuildConfig.FOURSQUARE_BASE_URL
+        }
     }
 }

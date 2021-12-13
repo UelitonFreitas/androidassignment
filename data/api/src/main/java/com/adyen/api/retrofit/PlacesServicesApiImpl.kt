@@ -1,12 +1,12 @@
 package com.adyen.api.retrofit
 
+import com.adyen.api.PlacesServicesApi
+import com.adyen.api.VenueRecommendationsQueryBuilder
 import com.adyen.dispatchers.DispatcherProvider
+import com.adyen.envvar.EnvVar
 import com.adyen.model.Location
 import com.adyen.model.Place
 import com.adyen.model.Resource
-import com.adyen.api.BuildConfig
-import com.adyen.api.PlacesServicesApi
-import com.adyen.api.VenueRecommendationsQueryBuilder
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
@@ -18,36 +18,37 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Inject
 
-class PlacesServicesApiImpl @Inject constructor(val dispatcherProvider: DispatcherProvider) :
+class PlacesServicesApiImpl @Inject constructor(
+    private val dispatcherProvider: DispatcherProvider,
+    private val envVar: EnvVar
+) :
     PlacesServicesApi {
 
-    companion object {
-        private val retrofit by lazy {
-            Retrofit.Builder()
-                .baseUrl(BuildConfig.FOURSQUARE_BASE_URL)
-                .client(httpClient)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-        }
-
-        val instance: PlacesService by lazy { retrofit.create(PlacesService::class.java) }
-
-        private val httpClient by lazy {
-            OkHttpClient.Builder()
-                .addNetworkInterceptor(HttpLoggingInterceptor().apply {
-                    level = HttpLoggingInterceptor.Level.BODY
-                })
-                .addInterceptor(AuthenticationInterceptor())
-                .build()
-        }
-
-        val coreFields = listOf("name", "fsq_id")
+    private val retrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl(envVar.FOURSQUARE_BASE_URL)
+            .client(httpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
     }
 
-    class AuthenticationInterceptor : Interceptor {
+    val instance: PlacesService by lazy { retrofit.create(PlacesService::class.java) }
+
+    private val httpClient by lazy {
+        OkHttpClient.Builder()
+            .addNetworkInterceptor(HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            })
+            .addInterceptor(AuthenticationInterceptor(envVar))
+            .build()
+    }
+
+    private val coreFields = listOf("name", "fsq_id")
+
+    class AuthenticationInterceptor(private val envVar: EnvVar) : Interceptor {
         override fun intercept(chain: Interceptor.Chain): Response {
             val request = chain.request().newBuilder().apply {
-                addHeader("Authorization", BuildConfig.FOUR_SQUARE_API_KEY)
+                addHeader("Authorization", envVar.FOUR_SQUARE_API_KEY)
             }.build()
 
             return chain.proceed(request)

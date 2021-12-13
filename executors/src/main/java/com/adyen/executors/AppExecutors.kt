@@ -1,4 +1,4 @@
-package com.adyen.android.assignment.executors
+package com.adyen.executors
 
 import android.os.Handler
 import android.os.Looper

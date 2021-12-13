@@ -18,8 +18,8 @@ import com.adyen.android.assignment.R
 import com.adyen.android.assignment.binding.AutoClearedValue
 import com.adyen.android.assignment.binding.FragmentDataBindingComponent
 import com.adyen.android.assignment.databinding.FragmentPlacesListBinding
-import com.adyen.android.assignment.di.Injectable
-import com.adyen.android.assignment.executors.AppExecutors
+import com.adyen.di.Injectable
+import com.adyen.executors.AppExecutors
 import com.adyen.android.assignment.ui.placesList.adapters.PlacesListAdapter
 import com.google.android.material.snackbar.Snackbar
 import javax.inject.Inject
