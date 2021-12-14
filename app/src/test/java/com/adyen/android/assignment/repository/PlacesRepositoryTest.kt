@@ -35,9 +35,6 @@ class PlacesRepositoryTest {
 
             val location = Location(1.0, 1.0)
             val expectedPlaces = createPlaces(4)
-            val placesFromDb = createDbPlaces(3)
-
-            mockPlacesDao(placesFromDb)
 
             val successApiResponse = Resource.success(expectedPlaces)
             mockServiceApi(successApiResponse, location)
@@ -49,79 +46,6 @@ class PlacesRepositoryTest {
             )
 
             placesRepo.getPlacesByLocationFlow(location).test {
-                assertEquals(Resource.success(expectedPlaces), awaitItem())
-            }
-
-            verify(placeDao).insertPlaces(eq(expectedPlaces.map { createDbPlace(it.id, it.name) }))
-        }
-
-    @Test
-    fun `should load places from database while loading from API`() =
-        coroutinesTestRule.testDispatcher.runBlockingTest {
-
-            val location = Location(1.0, 1.0)
-            val expectedPlaces = createPlaces(3)
-            val placesFromDb = createDbPlaces(3)
-
-            mockPlacesDao(placesFromDb)
-
-            val loadingApiResponse = Resource.loading<List<Place>>(null)
-            mockServiceApi(loadingApiResponse, location)
-
-            val placesRepo = PlacesRepositoryImpl(
-                placesServicesApi,
-                placeDao,
-                coroutinesTestRule.testDispatcherProvider
-            )
-
-            placesRepo.getPlacesByLocationFlow(location).test {
-                assertEquals(Resource.loading(expectedPlaces), awaitItem())
-            }
-        }
-
-    @Test
-    fun `should load places from database when there was an error from API`() =
-        coroutinesTestRule.testDispatcher.runBlockingTest {
-
-            val location = Location(1.0, 1.0)
-            val expectedPlaces = createPlaces(3)
-            val placesFromDb = createDbPlaces(3)
-
-            mockPlacesDao(placesFromDb)
-
-            val loadingApiResponse = Resource.error<List<Place>>(null)
-            mockServiceApi(loadingApiResponse, location)
-
-            val placesRepo = PlacesRepositoryImpl(
-                placesServicesApi,
-                placeDao,
-                coroutinesTestRule.testDispatcherProvider
-            )
-
-            placesRepo.getPlacesByLocationFlow(location).test {
-                assertEquals(Resource.error(expectedPlaces), awaitItem())
-            }
-        }
-
-
-    @Test
-    fun `should save places on DB when places it is loaded from api with success`() =
-        coroutinesTestRule.testDispatcher.runBlockingTest {
-
-            val location = Location(1.0, 1.0)
-            val query = "Coffee"
-            val expectedPlaces = createPlaces(4)
-
-            val successApiResponse = Resource.success(expectedPlaces)
-            mockQueriedServiceApi(query.lowercase(), successApiResponse, location)
-
-            val placesRepo = PlacesRepositoryImpl(
-                placesServicesApi,
-                placeDao,
-                coroutinesTestRule.testDispatcherProvider
-            )
-
-            placesRepo.getPlacesByQueryFlow(query.lowercase(), location).test {
                 assertEquals(Resource.success(expectedPlaces), awaitItem())
                 awaitComplete()
             }
@@ -151,7 +75,12 @@ class PlacesRepositoryTest {
                 awaitComplete()
             }
 
-            verify(placeDao, never()).insertPlaces(eq(expectedPlaces.map { createDbPlace(it.id, it.name) }))
+            verify(placeDao, never()).insertPlaces(eq(expectedPlaces.map {
+                createDbPlace(
+                    it.id,
+                    it.name
+                )
+            }))
         }
 
     private fun mockServiceApi(

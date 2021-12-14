@@ -69,12 +69,6 @@ class PlacesListUserCaseTest {
             }
         }
 
-
-    private suspend fun mockPlacesRepositoryFlow(places: List<Place> = createPlaces(3)) {
-        val placeFlow = flow { emit(Resource.success(places)) }
-        whenever(placesRepository.getPlaceListFlow()).thenReturn(placeFlow)
-    }
-
     private fun mockPlacesRepositoryFlowWithLocation(
         location: Location,
         places: List<Place> = createPlaces(3)
