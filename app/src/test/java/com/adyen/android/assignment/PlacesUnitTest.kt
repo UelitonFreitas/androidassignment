@@ -1,10 +1,10 @@
 package com.adyen.android.assignment
 
-import com.adyen.android.assignment.api.PlacesService
-import com.adyen.android.assignment.api.VenueRecommendationsQueryBuilder
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
+import com.adyen.api.retrofit.PlacesServicesApiImpl
+import com.adyen.api.VenueRecommendationsQueryBuilder
+import com.adyen.dispatchers.DefaultDispatcherProvider
+import com.adyen.envvar.EnvVar
+import org.junit.Assert.*
 import org.junit.Test
 
 class PlacesUnitTest {
@@ -13,7 +13,10 @@ class PlacesUnitTest {
         val query = VenueRecommendationsQueryBuilder()
             .setLatitudeLongitude(52.376510, 4.905890)
             .build()
-        val response = PlacesService.instance
+        val response = PlacesServicesApiImpl(DefaultDispatcherProvider(), object : EnvVar {
+            override val FOUR_SQUARE_API_KEY = BuildConfig.FOUR_SQUARE_API_KEY
+            override val FOURSQUARE_BASE_URL = BuildConfig.FOURSQUARE_BASE_URL
+        }).instance
             .getVenueRecommendations(query)
             .execute()
 

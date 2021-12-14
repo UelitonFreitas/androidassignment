@@ -1,0 +1,80 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion build_versions.target_sdk
+    buildToolsVersion build_versions.build_tools
+
+    defaultConfig {
+        minSdkVersion build_versions.min_sdk
+        targetSdkVersion build_versions.target_sdk
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    api project(":model")
+    implementation project(":data:api")
+    implementation project(':dispatchers')
+
+    releaseImplementation project(":testing-release")
+    debugImplementation project(":testing-debug")
+
+
+    implementation deps.core_ktx
+    implementation deps.lifecycle.livedata_ktx
+    implementation deps.kotlin.stdlib
+
+    implementation deps.dagger.runtime
+    kapt deps.dagger.compiler
+
+    implementation deps.kotpref.core
+    implementation deps.kotpref.initializer
+
+    androidTestImplementation deps.atsl.ext_junit
+    androidTestImplementation deps.espresso.core
+
+    testImplementation deps.junit
+
+    testImplementation deps.junit
+    testImplementation deps.arch_core.testing
+    testImplementation deps.mockito.core
+    testImplementation deps.coroutines.test
+    testImplementation deps.mockito.kotlin
+    testImplementation deps.turbine
+    testImplementation deps.hamcrest
+
+    androidTestImplementation deps.atsl.core
+    androidTestImplementation deps.atsl.ext_junit
+    androidTestImplementation deps.atsl.runner
+    androidTestImplementation deps.atsl.rules
+    androidTestImplementation deps.coroutines.test
+    androidTestImplementation deps.mockito.kotlin
+
+    androidTestImplementation deps.espresso.core
+    androidTestImplementation deps.espresso.contrib
+
+    androidTestImplementation deps.arch_core.testing
+    androidTestImplementation deps.mockito.core
+    androidTestImplementation deps.mockito.android
+}

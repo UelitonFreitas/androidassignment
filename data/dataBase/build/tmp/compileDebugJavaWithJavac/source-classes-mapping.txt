@@ -1,0 +1,2 @@
+com/adyen/database/BuildConfig.java
+ com.adyen.database.BuildConfig
