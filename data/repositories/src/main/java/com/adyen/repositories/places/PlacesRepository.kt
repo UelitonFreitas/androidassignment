@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.Flow
 
 abstract class PlacesRepository {
 
-    abstract fun getPlaceListFlow(): Flow<Resource<List<Place>>>
     abstract fun getPlacesByLocationFlow(location: Location): Flow<Resource<List<Place>>>
     abstract fun getPlacesByQueryFlow(
         query: String,
