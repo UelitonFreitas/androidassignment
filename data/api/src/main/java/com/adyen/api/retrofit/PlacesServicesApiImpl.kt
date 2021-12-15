@@ -7,7 +7,10 @@ import com.adyen.envvar.EnvVar
 import com.adyen.model.Location
 import com.adyen.model.Place
 import com.adyen.model.Resource
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
@@ -18,6 +21,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 class PlacesServicesApiImpl @Inject constructor(
     private val dispatcherProvider: DispatcherProvider,
     private val envVar: EnvVar
@@ -68,28 +72,30 @@ class PlacesServicesApiImpl @Inject constructor(
         }
 
     override fun getPlacesByLocationFlow(location: Location): Flow<Resource<List<Place>>> =
-        flow {
-            emit(Resource.loading(null))
+        callbackFlow {
+            offer(Resource.loading(null))
             try {
-                emit(Resource.success(getVenueRecommendations(location)))
+                offer(Resource.success(getVenueRecommendations(location)))
             } catch (e: Throwable) {
-                emit(Resource.error<List<Place>>(emptyList()))
+                offer(Resource.error<List<Place>>(emptyList()))
             }
+            awaitClose()
         }
 
     override fun getPlacesByQueryFlow(
         query: String,
         location: Location
-    ): Flow<Resource<List<Place>>> =
-        flow {
-            emit(Resource.loading(null))
-            try {
-                emit(Resource.success(getPlacesByQuery(query, location)))
-            } catch (e: Throwable) {
-                emit(Resource.error<List<Place>>(emptyList()))
-            }
+    ): Flow<Resource<List<Place>>> = callbackFlow {
+
+        offer(Resource.loading(null))
+        try {
+            offer(Resource.success(getPlacesByQuery(query, location)))
+        } catch (e: Throwable) {
+            offer(Resource.error<List<Place>>(emptyList()))
         }
 
+        awaitClose()
+    }
     private suspend fun getPlacesByQuery(aQuery: String, location: Location): List<Place> =
         withContext(dispatcherProvider.io()) {
             val query = VenueRecommendationsQueryBuilder()
